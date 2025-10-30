@@ -2,9 +2,7 @@
   <div class="root">
     <nav-bar />
     <playground />
-    sdf
   </div>
-  <div>lol</div>
 </template>
 
 <script setup lang="ts">

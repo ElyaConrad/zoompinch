@@ -178,7 +178,7 @@ const updateTransform = (newTransform: Partial<typeof transform.value>) => {
 
 const mouseEvents = ref(true);
 const touchEvents = ref(true);
-const wheelEvents = ref(false);
+const wheelEvents = ref(true);
 const gestureEvents = ref(true);
 
 function handleClickOnLayer(event: MouseEvent) {
