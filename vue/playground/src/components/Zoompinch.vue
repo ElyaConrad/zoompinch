@@ -11,7 +11,7 @@
       <slot name="default" />
     </div>
     <div class="matrix">
-      <slot name="matrix" />
+      <slot name="matrix" :compose-point="composePoint" />
     </div>
   </div>
 </template>
@@ -49,7 +49,7 @@ const props = withDefaults(
     gesture?: boolean;
   }>(),
   {
-    transform: () => ({ translateX: 0, translateY: 0, scale: 1, radians: 0 }),
+    transform: () => ({ translateX: 0, translateY: 0, scale: 1, rotate: 0 }),
     offset: () => ({ left: 0, top: 0, right: 0, bottom: 0 }),
     minScale: 0.5,
     maxScale: 10,
@@ -78,14 +78,28 @@ onMounted(() => {
     props.transform.translateX,
     props.transform.translateY,
     props.transform.scale,
-    props.transform.radians,
+    props.transform.rotate,
     props.minScale,
     props.maxScale
   );
 
-  zoompinchEngine.value.addEventListener('update', () => {
-    const newTransform
-  })
+  zoompinchEngine.value.addEventListener("update", () => {
+    if (!zoompinchEngine.value) return;
+    const newTransform = {
+      translateX: zoompinchEngine.value.translateX,
+      translateY: zoompinchEngine.value.translateY,
+      scale: zoompinchEngine.value.scale,
+      rotate: zoompinchEngine.value.rotate,
+    };
+    if (
+      newTransform.translateX !== props.transform.translateX ||
+      newTransform.translateY !== props.transform.translateY ||
+      newTransform.scale !== props.transform.scale ||
+      newTransform.rotate !== props.transform.rotate
+    ) {
+      emit("update:transform", newTransform);
+    }
+  });
 });
 
 watch(
@@ -93,26 +107,25 @@ watch(
   () => {
     if (!zoompinchEngine.value) return;
     if (
-      zoompinchEngine.value.translateX === props.transform.translateX &&
-      zoompinchEngine.value.translateY === props.transform.translateY &&
-      zoompinchEngine.value.scale === props.transform.scale &&
-      zoompinchEngine.value.rotate === props.transform.radians
+      zoompinchEngine.value.translateX !== props.transform.translateX ||
+      zoompinchEngine.value.translateY !== props.transform.translateY ||
+      zoompinchEngine.value.scale !== props.transform.scale ||
+      zoompinchEngine.value.rotate !== props.transform.rotate
     ) {
-      return;
-    }
-    zoompinchEngine.value.translateX = props.transform.translateX;
-    zoompinchEngine.value.translateY = props.transform.translateY;
-    zoompinchEngine.value.scale = props.transform.scale;
-    zoompinchEngine.value.rotate = props.transform.radians;
+      zoompinchEngine.value.translateX = props.transform.translateX;
+      zoompinchEngine.value.translateY = props.transform.translateY;
+      zoompinchEngine.value.scale = props.transform.scale;
+      zoompinchEngine.value.rotate = props.transform.rotate;
 
-    zoompinchEngine.value.update();
+      zoompinchEngine.value.update();
+    }
   }
 );
 
 const applyTransform = (
   scale: number,
   wrapperInnerCoords: [number, number],
-  canvasCoords: [number, number],
+  canvasCoords: [number, number]
 ) => {
   zoompinchEngine.value?.applyTransform(
     scale,
@@ -196,6 +209,11 @@ onUnmounted(() => {
   window.removeEventListener("touchmove", handleTouchmove);
   window.removeEventListener("touchend", handleTouchend);
 });
+
+function composePoint(x: number, y: number): [number, number] {
+  if (!zoompinchEngine.value) return [x, y];
+  return zoompinchEngine.value.composePoint(x, y);
+}
 
 // console.log('!!!!!! ZOOMPINCH !!!!!!!', props);
 

@@ -1,7 +1,12 @@
 <template>
   <div
     ref="zoompinchRef"
-    class="zoompinch" @wheel="handleWheel">
+    class="zoompinch"
+    @wheel="handleWheel"
+    @gesturestart="handleGesturestart"
+    @mousedown="handleMousedown"
+    @touchstart="handleTouchstart"
+  >
     <div class="canvas">
       <slot name="default" />
     </div>
@@ -13,8 +18,17 @@
 
 <script setup lang="ts">
 // import { useZoom } from '../controllers/zoom';
-import { Transform, Zoompinch } from '@zoompinch/core';
-import { ref, toRef, computed, onMounted, watch, toRefs, onUnmounted, reactive } from 'vue';
+import { Transform, Zoompinch } from "@zoompinch/core";
+import {
+  ref,
+  toRef,
+  computed,
+  onMounted,
+  watch,
+  toRefs,
+  onUnmounted,
+  reactive,
+} from "vue";
 
 const props = withDefaults(
   defineProps<{
@@ -35,7 +49,7 @@ const props = withDefaults(
     gesture?: boolean;
   }>(),
   {
-    transform: () => ({ translateX: 0, translateY: 0, scale: 1, radians: 0 }),
+    transform: () => ({ translateX: 0, translateY: 0, scale: 1, rotate: 0 }),
     offset: () => ({ left: 0, top: 0, right: 0, bottom: 0 }),
     minScale: 0.5,
     maxScale: 10,
@@ -48,7 +62,7 @@ const props = withDefaults(
   }
 );
 const emit = defineEmits<{
-  'update:transform': [transform: Transform];
+  "update:transform": [transform: Transform];
   dragGestureStart: [event: MouseEvent | TouchEvent | WheelEvent];
   dragGestureEnd: [event: MouseEvent | TouchEvent | WheelEvent];
 }>();
@@ -57,15 +71,67 @@ const zoompinchRef = ref<HTMLDivElement>();
 const zoompinchEngine = ref<Zoompinch>();
 
 onMounted(() => {
-  console.log('zoompinchRef', zoompinchRef.value);
   if (!zoompinchRef.value) return;
-  zoompinchEngine.value = new Zoompinch(zoompinchRef.value, props.offset, props.transform.translateX, props.transform.translateY, props.transform.scale, props.transform.radians, props.minScale, props.maxScale);
-  
+  zoompinchEngine.value = new Zoompinch(
+    zoompinchRef.value,
+    props.offset,
+    props.transform.translateX,
+    props.transform.translateY,
+    props.transform.scale,
+    props.transform.rotate,
+    props.minScale,
+    props.maxScale
+  );
 
+  zoompinchEngine.value.addEventListener("update", () => {
+    if (!zoompinchEngine.value) return;
+    const newTransform = {
+      translateX: zoompinchEngine.value.translateX,
+      translateY: zoompinchEngine.value.translateY,
+      scale: zoompinchEngine.value.scale,
+      rotate: zoompinchEngine.value.rotate,
+    };
+    if (
+      newTransform.translateX !== props.transform.translateX ||
+      newTransform.translateY !== props.transform.translateY ||
+      newTransform.scale !== props.transform.scale ||
+      newTransform.rotate !== props.transform.rotate
+    ) {
+      emit("update:transform", newTransform);
+    }
+  });
 });
 
-const applyTransform = (scale: number, wrapperInnerCoords: [number, number], canvasCoords: [number, number], animate: boolean) => {
-  zoompinchEngine.value?.applyTransform(scale, wrapperInnerCoords, canvasCoords);
+watch(
+  () => props.transform,
+  () => {
+    if (!zoompinchEngine.value) return;
+    if (
+      zoompinchEngine.value.translateX !== props.transform.translateX ||
+      zoompinchEngine.value.translateY !== props.transform.translateY ||
+      zoompinchEngine.value.scale !== props.transform.scale ||
+      zoompinchEngine.value.rotate !== props.transform.rotate
+    ) {
+      zoompinchEngine.value.translateX = props.transform.translateX;
+      zoompinchEngine.value.translateY = props.transform.translateY;
+      zoompinchEngine.value.scale = props.transform.scale;
+      zoompinchEngine.value.rotate = props.transform.rotate;
+
+      zoompinchEngine.value.update();
+    }
+  }
+);
+
+const applyTransform = (
+  scale: number,
+  wrapperInnerCoords: [number, number],
+  canvasCoords: [number, number]
+) => {
+  zoompinchEngine.value?.applyTransform(
+    scale,
+    wrapperInnerCoords,
+    canvasCoords
+  );
 };
 
 const handleWheel = (event: WheelEvent) => {
@@ -74,6 +140,75 @@ const handleWheel = (event: WheelEvent) => {
     zoompinchEngine.value.handleWheel(event);
   }
 };
+const handleGesturestart = (event: any) => {
+  if (!zoompinchEngine.value) return;
+  if (props.gesture) {
+    zoompinchEngine.value.handleGesturestart(event);
+  }
+};
+const handleGesturechange = (event: any) => {
+  if (!zoompinchEngine.value) return;
+  if (props.gesture) {
+    zoompinchEngine.value.handleGesturechange(event);
+  }
+};
+const handleGestureend = (event: any) => {
+  if (!zoompinchEngine.value) return;
+  if (props.gesture) {
+    zoompinchEngine.value.handleGestureend(event);
+  }
+};
+const handleMousedown = (event: MouseEvent) => {
+  if (!zoompinchEngine.value) return;
+  if (props.mouse) {
+    zoompinchEngine.value.handleMousedown(event);
+  }
+};
+const handleMousemove = (event: MouseEvent) => {
+  if (!zoompinchEngine.value) return;
+  if (props.mouse) {
+    zoompinchEngine.value.handleMousemove(event);
+  }
+};
+const handleMouseup = (event: MouseEvent) => {
+  if (!zoompinchEngine.value) return;
+  if (props.mouse) {
+    zoompinchEngine.value.handleMouseup(event);
+  }
+};
+const handleTouchstart = (event: TouchEvent) => {
+  if (!zoompinchEngine.value) return;
+  if (props.touch) {
+    zoompinchEngine.value.handleTouchstart(event);
+  }
+};
+const handleTouchmove = (event: TouchEvent) => {
+  if (!zoompinchEngine.value) return;
+  if (props.touch) {
+    zoompinchEngine.value.handleTouchmove(event);
+  }
+};
+const handleTouchend = (event: TouchEvent) => {
+  if (!zoompinchEngine.value) return;
+  if (props.touch) {
+    zoompinchEngine.value.handleTouchend(event);
+  }
+};
+
+window.addEventListener("gesturechange", handleGesturechange);
+window.addEventListener("gestureend", handleGestureend);
+window.addEventListener("mousemove", handleMousemove);
+window.addEventListener("mouseup", handleMouseup);
+window.addEventListener("touchmove", handleTouchmove);
+window.addEventListener("touchend", handleTouchend);
+onUnmounted(() => {
+  window.removeEventListener("gesturechange", handleGesturechange);
+  window.removeEventListener("gestureend", handleGestureend);
+  window.removeEventListener("mousemove", handleMousemove);
+  window.removeEventListener("mouseup", handleMouseup);
+  window.removeEventListener("touchmove", handleTouchmove);
+  window.removeEventListener("touchend", handleTouchend);
+});
 
 // console.log('!!!!!! ZOOMPINCH !!!!!!!', props);
 
@@ -313,7 +448,7 @@ const handleWheel = (event: WheelEvent) => {
 //   updateWrapperBounds
 // });
 defineExpose({
-  applyTransform
+  applyTransform,
 });
 </script>
 
@@ -375,7 +510,7 @@ defineExpose({
   } */
 }
 .zoompinch > .canvas {
-
+  position: absolute;
 }
 .zoompinch > .matrix {
   pointer-events: none;

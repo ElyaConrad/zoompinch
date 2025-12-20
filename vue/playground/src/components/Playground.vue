@@ -54,7 +54,7 @@
           <div class="field">
             <div class="description">Rotate</div>
             <div class="value">
-              <n-input-number v-model:value="transform.radians" />
+              <n-input-number v-model:value="transform.rotate" />
             </div>
           </div>
         </div>
@@ -104,7 +104,7 @@
         <n-button
           @click="fit()"
           :disabled="
-            transform.radians === 0 &&
+            transform.rotate === 0 &&
             transform.scale === 1 &&
             transform.translateX === 0 &&
             transform.translateY === 0
@@ -131,14 +131,14 @@
         :gesture="gestureEvents"
       >
         <img src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
-        <template #matrix="{ }">
+        <template #matrix="{ composePoint }">
           <svg xmlns="http://www.w3.org/2000/svg" @click="handleClickOnLayer">
-            <!-- <circle
-              :cx="compose(1536 / 2, 2048 / 2)[0]"
-              :cy="compose(1536 / 2, 2048 / 2)[1]"
+            <circle
+              :cx="composePoint(1536 / 2, 2048 / 2)[0]"
+              :cy="composePoint(1536 / 2, 2048 / 2)[1]"
               r="5"
               style="fill: #f00"
-            /> -->
+            />
           </svg>
         </template>
       </zoompinch>
@@ -172,11 +172,7 @@ const zoompinchRef = ref<InstanceType<typeof Zoompinch>>();
 const offset = reactive({ top: 10, right: 10, bottom: 10, left: 10 });
 (window as any).offset = offset;
 
-const transform = ref({ translateX: 0, translateY: 0, scale: 1, radians: 0 });
-(window as any).transform = transform;
-const updateTransform = (newTransform: Partial<typeof transform.value>) => {
-  transform.value = { ...transform.value, ...newTransform };
-};
+const transform = ref({ translateX: 0, translateY: 0, scale: 1, rotate: 0 });
 
 (window as any).zoompinchRef = zoompinchRef;
 

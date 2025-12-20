@@ -63,6 +63,7 @@ export class Zoompinch extends EventTarget {
       this.wrapperBounds = this.element.getBoundingClientRect();
       this.canvasBounds = this.canvasElement.getBoundingClientRect();
       this.update();
+      this.dispatchEvent(new Event('init'));
     });
 
     roCanvas.observe(this.canvasElement);
