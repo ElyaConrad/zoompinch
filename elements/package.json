@@ -1,26 +1,30 @@
 {
-  "name": "@zoompinch/core",
+  "name": "@zoompinch/elements",
   "description": "Pinch-and-zoom experience that's feels native and communicates the transform reactively and lets you project any layer on top of the transformed canvas",
-  "version": "0.0.2",
-  "private": false,
+  "version": "0.0.1",
   "type": "module",
-  "main": "./dist/zoompinch-core.umd.js",
-  "module": "./dist/zoompinch-core.es.js",
+  "main": "./dist/zoompinch-elements.umd.js",
+  "module": "./dist/zoompinch-elements.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/zoompinch-core.es.js",
-      "require": "./dist/zoompinch-core.umd.js",
+      "import": "./dist/zoompinch-elements.es.js",
+      "require": "./dist/zoompinch-elements.umd.js",
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly",
+    "build": "vite build",
     "dev": "vite"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
     "vite": "^6.4.1"
+  },
+  "dependencies": {
+    "@zoompinch/core": "^0.0.1"
   }
 }
