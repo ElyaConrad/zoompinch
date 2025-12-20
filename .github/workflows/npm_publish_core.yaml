@@ -21,8 +21,6 @@ jobs:
       - name: Install dependencies
         working-directory: core
         run: npm install
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
       - name: Build
         working-directory: core

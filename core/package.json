@@ -1,6 +1,7 @@
 {
   "name": "@zoompinch/core",
   "version": "0.0.1",
+  "private": false,
   "type": "module",
   "main": "./dist/zoompinch-core.umd.js",
   "module": "./dist/zoompinch-core.es.js",
