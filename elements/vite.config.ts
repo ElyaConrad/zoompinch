@@ -4,9 +4,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: 'src/index.ts',
-      name: 'ZoomPinch',
+      name: 'ZoompinchElements',
       formats: ['es', 'umd'],
-      fileName: (format) => `zoompinch-core.${format}.js`
+      fileName: (format) => `zoompinch-elements.${format}.js`
     },
     rollupOptions: {
       external: [],

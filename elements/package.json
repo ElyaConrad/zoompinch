@@ -1,7 +1,7 @@
 {
   "name": "@zoompinch/elements",
-  "description": "Pinch-and-zoom experience that's feels native and communicates the transform reactively and lets you project any layer on top of the transformed canvas",
-  "version": "0.0.1",
+  "description": "Custom elements wrapper ZoomPinch - reactive pinch & zoom component",
+  "version": "0.0.5",
   "type": "module",
   "main": "./dist/zoompinch-elements.umd.js",
   "module": "./dist/zoompinch-elements.es.js",

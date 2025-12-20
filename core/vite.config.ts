@@ -4,7 +4,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: 'src/index.ts',
-      name: 'ZoomPinch',
+      name: 'Zoompinch',
       formats: ['es', 'umd'],
       fileName: (format) => `zoompinch-core.${format}.js`
     },

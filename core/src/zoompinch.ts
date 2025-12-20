@@ -1,9 +1,7 @@
 import {
   clamp,
   degreeToRadians,
-  radiansToDegrees,
   rotatePoint,
-  round,
   detectTrackpad,
   isMultipleOf,
   getUntransformedRect,
@@ -25,7 +23,7 @@ export type Transform = {
   translateX: number;
   translateY: number;
   scale: number;
-  radians: number;
+  rotate: number;
 };
 
 export class Zoompinch extends EventTarget {
@@ -70,6 +68,9 @@ export class Zoompinch extends EventTarget {
     roCanvas.observe(this.canvasElement);
     roElement.observe(this.element);
 
+    console.log('INIT');
+    
+
   }
   get canvasElement() {
     return this.element.querySelector('.canvas')! as HTMLElement;
@@ -101,9 +102,9 @@ export class Zoompinch extends EventTarget {
       return this.wrapperInnerHeight / this.canvasBounds.height;
     }
   }
-  private gestureStartRadians = 0;
+  private gestureStartRotate = 0;
   public handleGesturestart(event: UIEvent) {
-    this.gestureStartRadians = this.rotate;
+    this.gestureStartRotate = this.rotate;
   }
   public handleGesturechange(event: UIEvent) {
     const { clientX, clientY } = event as any;
@@ -113,7 +114,7 @@ export class Zoompinch extends EventTarget {
     }
 
     const relPos = this.normalizeMatrixCoordinates(clientX, clientY);
-    this.rotateCanvas(relPos[0], relPos[1], this.gestureStartRadians + degreeToRadians(currRotation));
+    this.rotateCanvas(relPos[0], relPos[1], this.gestureStartRotate + degreeToRadians(currRotation));
   }
   public handleGestureend(event: UIEvent) {
     //console.log('gestureend', event);
@@ -335,6 +336,8 @@ export class Zoompinch extends EventTarget {
     return [deltaX, deltaY] as [number, number];
   }
   public applyTransform(newScale: number, wrapperInnerCoords: [number, number], canvasAnchorCoords: [number, number]) {
+    console.log('....apply transform');
+    
     const scaleTranslation = this.calcProjectionTranslate(newScale, wrapperInnerCoords, canvasAnchorCoords, 0);
     this.scale = newScale;
     this.translateX = scaleTranslation[0];
@@ -423,20 +426,14 @@ export class Zoompinch extends EventTarget {
     const [relX, relY] = this.normalizeMatrixCoordinates(clientX, clientY);
     return [relX * this.canvasBounds.width, relY * this.canvasBounds.height] as [number, number];
   }
-  rotateCanvas(x: number, y: number, radians: number) {
-    const virtualPoint = this.composeRelPoint(x, y, this.scale, 0, 0, radians);
+  rotateCanvas(x: number, y: number, rotate: number) {
+    const virtualPoint = this.composeRelPoint(x, y, this.scale, 0, 0, rotate);
     const currPoint = this.composeRelPoint(x, y);
     this.translateX = currPoint[0] - virtualPoint[0];
     this.translateY = currPoint[1] - virtualPoint[1];
-    this.rotate = radians;
+    this.rotate = rotate;
     this.update();
   }
-  centeredTransform: { translateX: number; translateY: number; scale: number; radians: number } = {
-    translateX: 0,
-    translateY: 0,
-    scale: 1,
-    radians: 0,
-  };
 
   get renderinScale() {
     return this.naturalScale * this.scale;
