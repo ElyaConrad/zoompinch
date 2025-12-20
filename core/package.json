@@ -1,0 +1,24 @@
+{
+  "name": "@zoompinch/core",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/zoompinch-core.umd.js",
+  "module": "./dist/zoompinch-core.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/zoompinch-core.es.js",
+      "require": "./dist/zoompinch-core.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^6.4.1"
+  }
+}

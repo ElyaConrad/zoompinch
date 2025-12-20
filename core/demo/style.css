@@ -1,0 +1,15 @@
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+.wrapper {
+  padding: 50px;
+}
+
+zoom-pinch {
+  width: 100%;
+  height: 600px;
+  background-color: #f00;
+}
