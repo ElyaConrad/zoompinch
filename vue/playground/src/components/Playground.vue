@@ -131,11 +131,12 @@
         :gesture="gestureEvents"
       >
         <img src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
-        <template #matrix="{ composePoint }">
-          <svg xmlns="http://www.w3.org/2000/svg" @click="handleClickOnLayer">
+        <template #matrix="{ }">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="pointer-events: all;" @click="handleClickOnLayer">
             <circle
-              :cx="composePoint(1536 / 2, 2048 / 2)[0]"
-              :cy="composePoint(1536 / 2, 2048 / 2)[1]"
+              v-if="zoompinchRef?.composePoint"
+              :cx="zoompinchRef.composePoint(1536 / 2, 2048 / 2)[0]"
+              :cy="zoompinchRef.composePoint(1536 / 2, 2048 / 2)[1]"
               r="5"
               style="fill: #f00"
             />
@@ -182,15 +183,16 @@ const wheelEvents = ref(true);
 const gestureEvents = ref(true);
 
 function handleClickOnLayer(event: MouseEvent) {
-  // const [x, y] = zoompinchRef.value!.normalizeMatrixCoordinates(event.clientX, event.clientY);
-  // console.log('clicked at', x, y);
-  // alert(`clicked at ${x}, ${y}`);
+  if (!zoompinchRef.value) return;
+  const [x, y] = zoompinchRef.value.normalizeClientCoords(event.clientX, event.clientY);
+  alert(`Clicked on layer at normalized coords: ${x.toFixed(2)}, ${y.toFixed(2)}`);
+  
 }
 function fit() {
   if (!zoompinchRef.value) return;
   // transform.value = { translateX: 0, translateY: 0, scale: 1, radians: 0 };
   console.log("FITTING!!!");
-  zoompinchRef.value.applyTransform(1, [0.5, 0.5], [0.5, 0.5]);
+  zoompinchRef.value.applyTransform(1, [0.5, 0.5], [0.5, 0.5], 0);
 }
 // onMounted(() => {
 //   setTimeout(() => fit(true));
