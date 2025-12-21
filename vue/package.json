@@ -2,7 +2,7 @@
   "name": "@zoompinch/vue",
   "description": "Vue wrapper for ZoomPinch - reactive pinch & zoom component",
   "version": "0.0.0",
-  "private": false,
+  "private": true,
   "type": "module",
   "main": "./dist/zoompinch-vue.umd.js",
   "module": "./dist/zoompinch-vue.es.js",
