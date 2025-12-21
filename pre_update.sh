@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd core
-npm version patch
+NEW_CORE_VERSION=$(npm version patch)
 
 cd ../elements
 npm version patch

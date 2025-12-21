@@ -1,0 +1,18 @@
+{
+  "name": "zoompinch-monorepo",
+  "private": true,
+  "workspaces": [
+    "core",
+    "elements",
+    "vue"
+  ],
+  "scripts": {
+    "build": "npm run build -ws",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "publish": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0"
+  }
+}
