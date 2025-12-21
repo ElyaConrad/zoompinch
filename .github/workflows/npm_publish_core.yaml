@@ -87,7 +87,7 @@ jobs:
       - name: Clear npm cache
         run: npm cache clean --force
       - name: Install dependencies
-        run: npm install
+        run: npm install @zoompinch/vue@latest
         working-directory: playground
       - name: Build playground
         run: npm run build
