@@ -33,8 +33,13 @@ jobs:
         uses: changesets/action@v1
         with:
           publish: pnpm -r publish
+          setupGitUser: true
+          createGithubReleases: true
+          commitMode: git-cli
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
   deploy-cloudflare:
     runs-on: ubuntu-latest
