@@ -103,12 +103,6 @@
       <section>
         <n-button
           @click="fit()"
-          :disabled="
-            transform.rotate === 0 &&
-            transform.scale === 1 &&
-            transform.translateX === 0 &&
-            transform.translateY === 0
-          "
           type="success"
           style="width: 100%"
         >
@@ -121,7 +115,7 @@
         ref="zoompinchRef"
         :offset="offset"
         v-model:transform="transform"
-        :min-scale="0.1"
+        :min-scale="0.35"
         :max-scale="10"
         :rotation="rotation"
         :bounds="bounds"
@@ -131,12 +125,11 @@
         :gesture="gestureEvents"
       >
         <img src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
-        <template #matrix="{ }">
+        <template #matrix="{ composePoint }">
           <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="pointer-events: all;" @click="handleClickOnLayer">
             <circle
-              v-if="zoompinchRef?.composePoint"
-              :cx="zoompinchRef.composePoint(1536 / 2, 2048 / 2)[0]"
-              :cy="zoompinchRef.composePoint(1536 / 2, 2048 / 2)[1]"
+              :cx="composePoint(1536 / 2, 2048 / 2)[0]"
+              :cy="composePoint(1536 / 2, 2048 / 2)[1]"
               r="5"
               style="fill: #f00"
             />
@@ -148,9 +141,8 @@
 </template>
 
 <script setup lang="ts">
-// import { Zoompinch } from "@zoompinch/vue";
-// import "@zoompinch/vue/style.css";
-import Zoompinch from "./Zoompinch.vue";
+import {Zoompinch} from "@zoompinch/vue";
+import "@zoompinch/vue/style.css";
 import { onMounted, reactive, ref, watch, watchEffect } from "vue";
 import { NInputNumber, NSwitch, NButton } from "naive-ui";
 

@@ -69,7 +69,7 @@ export class Zoompinch extends EventTarget {
     roCanvas.observe(this.canvasElement);
     roElement.observe(this.element);
 
-    console.log('INIT');
+    console.log('INIT!');
     
 
   }
