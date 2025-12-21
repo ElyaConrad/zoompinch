@@ -84,6 +84,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Clear npm cache
+        run: npm cache clean --force
       - name: Install dependencies
         run: npm install
         working-directory: playground
