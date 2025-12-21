@@ -84,9 +84,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Install latest zoompinch
-        run: npm install zoompinch@latest
-        working-directory: playground
       - name: Install dependencies
         run: npm install
         working-directory: playground
