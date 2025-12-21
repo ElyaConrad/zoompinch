@@ -54,15 +54,14 @@ jobs:
         with:
           node-version: 20
 
-      - run: npm install -g pnpm@8
 
       - name: Install playground dependencies
         working-directory: vue/playground
-        run: pnpm install
+        run: npm install
 
       - name: Build playground
         working-directory: vue/playground
-        run: pnpm build
+        run: npm build
 
       - name: Deploy to Cloudflare Pages
         working-directory: vue/playground
