@@ -1,11 +1,5 @@
 {
-  "name": "zoompinch-monorepo",
   "private": true,
-  "workspaces": [
-    "core",
-    "elements",
-    "vue"
-  ],
   "scripts": {
     "build": "pnpm -r build",
     "changeset": "changeset",
