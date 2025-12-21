@@ -1,7 +1,7 @@
 {
   "name": "@zoompinch/core",
   "description": "Pinch-and-zoom experience that's feels native and communicates the transform reactively and lets you project any layer on top of the transformed canvas",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "private": false,
   "type": "module",
   "main": "./dist/zoompinch-core.umd.js",
@@ -14,7 +14,9 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly",
     "dev": "vite"

@@ -74,37 +74,9 @@ jobs:
         env:
             NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
-          # publish-npm:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v2
-  #       with:
-  #         node-version: 20
-  #         registry-url: https://registry.npmjs.org/
-
-  #     - name: Install dependencies
-  #       working-directory: "@zoompinch/vue"
-  #       run: npm install
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-  #     - name: Copy README to vue project
-  #       run: cp README.md zoompinch-vue/README.md
-
-  #     - name: Build and publish
-  #       working-directory: "@zoompinch/vue"
-  #       run: npm run build
-
-  #     - name: Publish to npm
-  #       working-directory: "@zoompinch/vue"
-  #       run: npm publish
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
   deploy-cloudflare:
     runs-on: ubuntu-latest
-    needs: publish-npm
+    needs: publish-vue
     env:
       CLOUDFLARE_PROJECT_NAME: zoompinch
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -115,8 +87,11 @@ jobs:
       - name: Install latest zoompinch
         run: npm install zoompinch@latest
         working-directory: vue/playground
-      - name: test installed version
-        run: cat package.json | grep -e '"zoompinch":'
+      - name: Install dependencies
+        run: npm install
+        working-directory: vue/playground
+      - name: Install latest @zoompinch/vue
+        run: npm install @zoompinch/vue@latest
         working-directory: vue/playground
       - name: Build playground
         run: npm run build
