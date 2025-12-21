@@ -1,7 +1,7 @@
 {
   "name": "@zoompinch/vue",
   "description": "Vue wrapper for ZoomPinch - reactive pinch & zoom component",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "private": false,
   "type": "module",
   "main": "./dist/zoompinch-vue.umd.js",
@@ -30,7 +30,7 @@
     "vue-tsc": "^3.2.0"
   },
   "dependencies": {
-    "@zoompinch/core": "^0.0.13"
+    "@zoompinch/core": "^0.0.14"
   },
   "peerDependencies": {
     "vue": "^3.5.26"

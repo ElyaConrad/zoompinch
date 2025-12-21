@@ -106,10 +106,10 @@
     </header>
     <div class="projection-wrapper">
       <zoompinch ref="zoompinchRef" :offset="offset" v-model:transform="transform" :min-scale="0.35" :max-scale="10" :rotation="rotation" :bounds="bounds" :mouse="mouseEvents" :touch="touchEvents" :wheel="wheelEvents" :gesture="gestureEvents">
-        <img src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
+        <img src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public"></img>
         <template #matrix="{ composePoint }">
           <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="pointer-events: all" @click="handleClickOnLayer">
-            <circle :cx="composePoint(1536 / 2, 2048 / 2)[0]" :cy="composePoint(1536 / 2, 2048 / 2)[1]" r="5" style="fill: #f00" />
+            <circle :cx="composePoint(1536 / 2, 2048 / 2)[0]" :cy="composePoint(1536 / 2, 2048 / 2)[1]" r="5" style="fill: #f00"></circle>
           </svg>
         </template>
       </zoompinch>
