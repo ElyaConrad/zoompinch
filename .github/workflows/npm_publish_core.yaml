@@ -89,8 +89,8 @@ jobs:
       - name: Install dependencies
         run: npm install @zoompinch/vue@latest
         working-directory: playground
-      - name: Copy the previously built assets
-        run: cp -R ../vue/dist ./node_modules/@zoompinch/vue/dist && cp ../vue/package.json ./node_modules/@zoompinch/vue/package.json
+      - name: Copy the local vue package
+        run: cp -r ../vue ./node_modules/@zoompinch/vue
         working-directory: playground
       - name: Build playground
         run: npm run build
