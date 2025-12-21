@@ -86,16 +86,13 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install latest zoompinch
         run: npm install zoompinch@latest
-        working-directory: vue/playground
+        working-directory: playground
       - name: Install dependencies
         run: npm install
-        working-directory: vue/playground
-      - name: Install latest @zoompinch/vue
-        run: npm install @zoompinch/vue@latest
-        working-directory: vue/playground
+        working-directory: playground
       - name: Build playground
         run: npm run build
-        working-directory: vue/playground
+        working-directory: playground
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy dist --project-name ${{ env.CLOUDFLARE_PROJECT_NAME }} --branch main
-        working-directory: vue/playground
+        working-directory: playground
