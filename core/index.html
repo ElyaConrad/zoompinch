@@ -9,10 +9,10 @@
     <div class="wrapper">
       <zoom-pinch min-scale="0.1" max-scale="4" rotation scale="1" translate-x="0" translate-y="0" offset-top="20" offset-left="10" offset-right="20" offset-bottom="10">
         <img src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
-        <div slot="matrix" style="width: 100%; height: 100%;">
+        <div slot="matrix" style="width: 100%; height: 100%">
           <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-            <circle id="circle-1" r="5" style="fill: #00f;" />
-            <circle id="circle-2" r="5" style="fill: #00f;" />
+            <circle id="circle-1" r="5" style="fill: #00f" />
+            <circle id="circle-2" r="5" style="fill: #00f" />
           </svg>
         </div>
       </zoom-pinch>
@@ -33,17 +33,17 @@
       zoomPinch.addEventListener('update', () => {
         const point1 = zoomPinch.composePoint(100, 100);
         const point2 = zoomPinch.composePoint(300, 200);
-        
+
         circle1.setAttribute('cx', point1[0].toString());
         circle1.setAttribute('cy', point1[1].toString());
-        circle2.setAttribute( 'cx', point2[0].toString());
+        circle2.setAttribute('cx', point2[0].toString());
         circle2.setAttribute('cy', point2[1].toString());
       });
       zoomPinch.addEventListener('click', (event) => {
         const { clientX, clientY } = event;
         const canvasCoords = zoomPinch.normalizeClientCoords(clientX, clientY);
         console.log('Canvas Coordinates:', canvasCoords);
-      })
+      });
 
       window.test = () => {
         const zoomPinch = document.querySelector('zoom-pinch');
@@ -52,9 +52,8 @@
         }
         zoomPinch.setAttribute('offset-top', '100');
 
-        zoomPinch.applyTransform(1, [0.5, 0.5], [0.5, 0.5])
-      }
-
+        zoomPinch.applyTransform(1, [0.5, 0.5], [0.5, 0.5]);
+      };
     </script>
   </body>
 </html>

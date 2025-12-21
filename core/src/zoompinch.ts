@@ -1,11 +1,4 @@
-import {
-  clamp,
-  degreeToRadians,
-  rotatePoint,
-  detectTrackpad,
-  isMultipleOf,
-  getUntransformedRect,
-} from './helpers';
+import { clamp, degreeToRadians, rotatePoint, detectTrackpad, isMultipleOf, getUntransformedRect } from './helpers';
 
 export type Offset = {
   top: number;
@@ -30,16 +23,7 @@ export class Zoompinch extends EventTarget {
   wrapperBounds!: Bounds;
   canvasBounds!: Bounds;
 
-  constructor(
-    public element: HTMLElement,
-    public offset: Offset,
-    public translateX: number,
-    public translateY: number,
-    public scale: number,
-    public rotate: number,
-    public minScale = 0.1,
-    public maxScale = 10
-  ) {
+  constructor(public element: HTMLElement, public offset: Offset, public translateX: number, public translateY: number, public scale: number, public rotate: number, public minScale = 0.1, public maxScale = 10) {
     super();
 
     const roElement = new ResizeObserver(() => {
@@ -48,13 +32,7 @@ export class Zoompinch extends EventTarget {
       this.update();
     });
     const roCanvas = new ResizeObserver(() => {
-      const { x, y, width, height } = getUntransformedRect(
-        this.canvasElement.getBoundingClientRect(),
-        this.renderingTranslateX,
-        this.renderingTranslateY,
-        this.renderinScale,
-        this.renderingRotate
-      );
+      const { x, y, width, height } = getUntransformedRect(this.canvasElement.getBoundingClientRect(), this.renderingTranslateX, this.renderingTranslateY, this.renderinScale, this.renderingRotate);
       this.canvasBounds = { x, y, width, height };
       this.update();
     });
@@ -70,8 +48,6 @@ export class Zoompinch extends EventTarget {
     roElement.observe(this.element);
 
     console.log('INIT!');
-    
-
   }
   get canvasElement() {
     return this.element.querySelector('.canvas')! as HTMLElement;
@@ -167,11 +143,7 @@ export class Zoompinch extends EventTarget {
 
       const coords = this.relativeWrapperCoordinatesFromClientCoords(event.clientX, event.clientY);
 
-      const [translateX, translateY] = this.calcProjectionTranslate(
-        newScale,
-        coords,
-        this.normalizeMatrixCoordinates(event.clientX, event.clientY)
-      );
+      const [translateX, translateY] = this.calcProjectionTranslate(newScale, coords, this.normalizeMatrixCoordinates(event.clientX, event.clientY));
 
       this.translateX = translateX;
       this.translateY = translateY;
@@ -205,9 +177,7 @@ export class Zoompinch extends EventTarget {
   public handleTouchmove(event: TouchEvent) {
     event.preventDefault(); // Prevent default touch behavior
     // Make the touch positions become relative to the inner wrapper
-    const touchPositions = Array.from(event.touches).map((touch) =>
-      this.clientCoordsToWrapperCoords(touch.clientX, touch.clientY)
-    );
+    const touchPositions = Array.from(event.touches).map((touch) => this.clientCoordsToWrapperCoords(touch.clientX, touch.clientY));
 
     if (this.touchStarts) {
       if (touchPositions.length >= 2 && this.touchStarts.length >= 2) {
@@ -219,32 +189,17 @@ export class Zoompinch extends EventTarget {
         // SCALE
 
         // Calculate the distance between the two fingers at the start
-        const fingerOneStartCanvasCoords: [number, number] = [
-          this.touchStarts[0].canvasRel[0] * this.canvasBounds.width,
-          this.touchStarts[0].canvasRel[1] * this.canvasBounds.height,
-        ];
-        const fingerTwoStartCanvasCoords: [number, number] = [
-          this.touchStarts[1].canvasRel[0] * this.canvasBounds.width,
-          this.touchStarts[1].canvasRel[1] * this.canvasBounds.height,
-        ];
+        const fingerOneStartCanvasCoords: [number, number] = [this.touchStarts[0].canvasRel[0] * this.canvasBounds.width, this.touchStarts[0].canvasRel[1] * this.canvasBounds.height];
+        const fingerTwoStartCanvasCoords: [number, number] = [this.touchStarts[1].canvasRel[0] * this.canvasBounds.width, this.touchStarts[1].canvasRel[1] * this.canvasBounds.height];
 
         // This is the absolute distance between the two fingers at the start
-        const fingerStartCanvasCoordsDelta = Math.sqrt(
-          Math.pow(fingerOneStartCanvasCoords[0] - fingerTwoStartCanvasCoords[0], 2) +
-            Math.pow(fingerOneStartCanvasCoords[1] - fingerTwoStartCanvasCoords[1], 2)
-        );
+        const fingerStartCanvasCoordsDelta = Math.sqrt(Math.pow(fingerOneStartCanvasCoords[0] - fingerTwoStartCanvasCoords[0], 2) + Math.pow(fingerOneStartCanvasCoords[1] - fingerTwoStartCanvasCoords[1], 2));
         // This is the absolute distance between the two fingers now
-        const fingersNowDelta =
-          Math.sqrt(
-            Math.pow(touchPositions[0][0] - touchPositions[1][0], 2) + Math.pow(touchPositions[0][1] - touchPositions[1][1], 2)
-          ) / this.naturalScale;
+        const fingersNowDelta = Math.sqrt(Math.pow(touchPositions[0][0] - touchPositions[1][0], 2) + Math.pow(touchPositions[0][1] - touchPositions[1][1], 2)) / this.naturalScale;
         // This is the future scale
         const futureScale = clamp(fingersNowDelta / fingerStartCanvasCoordsDelta, this.minScale, this.maxScale);
         // Justcalculate the relative coordinates of the inner wrapper and the canvas
-        const innerWrapperRelPos: [number, number] = [
-          touchPositions[0][0] / this.wrapperInnerWidth,
-          touchPositions[0][1] / this.wrapperInnerHeight,
-        ];
+        const innerWrapperRelPos: [number, number] = [touchPositions[0][0] / this.wrapperInnerWidth, touchPositions[0][1] / this.wrapperInnerHeight];
         const innerCanvasRel = this.touchStarts[0].canvasRel;
         // Project the scale
         const [scaleDeltaX, scaleDeltaY] = this.calcProjectionTranslate(futureScale, innerWrapperRelPos, innerCanvasRel, 0);
@@ -253,34 +208,21 @@ export class Zoompinch extends EventTarget {
         let deltaAngle = 0;
         // ROTATION
         // Angle between the two fingers at the start
-        const startAngle = Math.atan2(
-          fingerTwoStartCanvasCoords[1] - fingerOneStartCanvasCoords[1],
-          fingerTwoStartCanvasCoords[0] - fingerOneStartCanvasCoords[0]
-        );
+        const startAngle = Math.atan2(fingerTwoStartCanvasCoords[1] - fingerOneStartCanvasCoords[1], fingerTwoStartCanvasCoords[0] - fingerOneStartCanvasCoords[0]);
         // Angle between the first finger at the start and the second finger at the current position
         const newAngle = Math.atan2(touchPositions[1][1] - touchPositions[0][1], touchPositions[1][0] - touchPositions[0][0]);
         // Delta angle between the original angle the one that we're projecting
         deltaAngle = newAngle - startAngle;
         // This method will project a point on the canvas using the already known scale and its delta
         const projectPosScaled = (x: number, y: number): [number, number] => {
-          return [
-            this.offset.left + this.canvasBounds.width * x * this.naturalScale * futureScale + scaleDeltaX,
-            this.offset.top + this.canvasBounds.height * y * this.naturalScale * futureScale + scaleDeltaY,
-          ];
+          return [this.offset.left + this.canvasBounds.width * x * this.naturalScale * futureScale + scaleDeltaX, this.offset.top + this.canvasBounds.height * y * this.naturalScale * futureScale + scaleDeltaY];
         };
         // Normal 0,0 position
         const originPointProjectionWithoutRotation = projectPosScaled(0, 0);
         // Anchor point
-        const anchorPointProjectionWithoutRotation = projectPosScaled(
-          this.touchStarts[0].canvasRel[0],
-          this.touchStarts[0].canvasRel[1]
-        );
+        const anchorPointProjectionWithoutRotation = projectPosScaled(this.touchStarts[0].canvasRel[0], this.touchStarts[0].canvasRel[1]);
         // Origin point with rotation
-        const originPointProjectionWithRotation = rotatePoint(
-          originPointProjectionWithoutRotation,
-          anchorPointProjectionWithoutRotation,
-          deltaAngle
-        );
+        const originPointProjectionWithRotation = rotatePoint(originPointProjectionWithoutRotation, anchorPointProjectionWithoutRotation, deltaAngle);
         // Calculate the difference between the original and the rotated point
         rotationDeltaX = originPointProjectionWithRotation[0] - originPointProjectionWithoutRotation[0];
         rotationDeltaY = originPointProjectionWithRotation[1] - originPointProjectionWithoutRotation[1];
@@ -312,12 +254,7 @@ export class Zoompinch extends EventTarget {
       this.touchStartTranslateY = this.translateY;
     }
   }
-  private calcProjectionTranslate(
-    newScale: number,
-    wrapperPosition: [number, number],
-    canvasPosition: [number, number],
-    virtualRotate?: number
-  ) {
+  private calcProjectionTranslate(newScale: number, wrapperPosition: [number, number], canvasPosition: [number, number], virtualRotate?: number) {
     // Calculate the intrinsic dimensions of the canvas
     const canvasIntrinsicWidth = this.canvasBounds.width * this.naturalScale;
     const canvasIntrinsicHeight = this.canvasBounds.height * this.naturalScale;
@@ -338,21 +275,14 @@ export class Zoompinch extends EventTarget {
   }
   public applyTransform(newScale: number, wrapperInnerCoords: [number, number], canvasAnchorCoords: [number, number]) {
     console.log('....apply transform');
-    
+
     const scaleTranslation = this.calcProjectionTranslate(newScale, wrapperInnerCoords, canvasAnchorCoords, 0);
     this.scale = newScale;
     this.translateX = scaleTranslation[0];
     this.translateY = scaleTranslation[1];
     this.update();
   }
-  private composeRelPoint(
-    x: number,
-    y: number,
-    currScale?: number,
-    currTranslateX?: number,
-    currTranslateY?: number,
-    currRotate?: number
-  ) {
+  private composeRelPoint(x: number, y: number, currScale?: number, currTranslateX?: number, currTranslateY?: number, currRotate?: number) {
     currScale = currScale ?? this.scale;
     currTranslateX = currTranslateX ?? this.translateX;
     currTranslateY = currTranslateY ?? this.translateY;
@@ -361,10 +291,7 @@ export class Zoompinch extends EventTarget {
     // Anchor is 0, 0
     const anchor = [this.offset.left, this.offset.top] as [number, number];
     // Scale the point
-    const scaledPoint = [
-      this.offset.left + this.canvasBounds.width * (currScale * this.naturalScale) * x,
-      this.offset.top + this.canvasBounds.height * (currScale * this.naturalScale) * y,
-    ] as [number, number];
+    const scaledPoint = [this.offset.left + this.canvasBounds.width * (currScale * this.naturalScale) * x, this.offset.top + this.canvasBounds.height * (currScale * this.naturalScale) * y] as [number, number];
     // Rotate around the anchor
     const rotatedPoint = rotatePoint(scaledPoint, anchor, currRotate);
     // Translate straightforward
@@ -402,10 +329,7 @@ export class Zoompinch extends EventTarget {
     // Unscale the point
     const unscaledPoint = [unrotatedPoint[0] / this.renderinScale, unrotatedPoint[1] / this.renderinScale];
     // Return the point relative to the canvas natural size
-    const pointRel = [unscaledPoint[0] / this.canvasBounds.width, unscaledPoint[1] / this.canvasBounds.height] as [
-      number,
-      number
-    ];
+    const pointRel = [unscaledPoint[0] / this.canvasBounds.width, unscaledPoint[1] / this.canvasBounds.height] as [number, number];
     return pointRel;
   }
   // Converts absolute client to coordinates to absolute inner-wrapper coorinates

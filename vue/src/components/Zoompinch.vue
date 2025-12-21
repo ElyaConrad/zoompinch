@@ -1,39 +1,17 @@
 <template>
-  <div
-    ref="zoompinchRef"
-    class="zoompinch"
-    @wheel="handleWheel"
-    @gesturestart="handleGesturestart"
-    @mousedown="handleMousedown"
-    @touchstart="handleTouchstart"
-  >
+  <div ref="zoompinchRef" class="zoompinch" @wheel="handleWheel" @gesturestart="handleGesturestart" @mousedown="handleMousedown" @touchstart="handleTouchstart">
     <div class="canvas">
       <slot name="default" />
     </div>
     <div class="matrix">
-      <slot
-        v-if="ready && composePoint"
-        name="matrix"
-        :compose-point="composePoint"
-      />
+      <slot v-if="ready && composePoint" name="matrix" :compose-point="composePoint" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// import { useZoom } from '../controllers/zoom';
-import { Transform, Zoompinch } from "@zoompinch/core";
-import {
-  ref,
-  toRef,
-  computed,
-  onMounted,
-  watch,
-  toRefs,
-  onUnmounted,
-  reactive,
-  watchEffect,
-} from "vue";
+import { Transform, Zoompinch } from '@zoompinch/core';
+import { ref, toRef, computed, onMounted, watch, toRefs, onUnmounted, reactive, watchEffect } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -67,7 +45,7 @@ const props = withDefaults(
   }
 );
 const emit = defineEmits<{
-  "update:transform": [transform: Transform];
+  'update:transform': [transform: Transform];
   dragGestureStart: [event: MouseEvent | TouchEvent | WheelEvent];
   dragGestureEnd: [event: MouseEvent | TouchEvent | WheelEvent];
 }>();
@@ -80,23 +58,14 @@ const ready = ref(false);
 (window as any).zoompinchEngine = zoompinchEngine;
 
 const composePoint = ref<(x: number, y: number) => [number, number]>(() => {
-  throw new Error("Not initialized yet");
+  throw new Error('Not initialized yet');
 });
 
 onMounted(() => {
   if (!zoompinchRef.value) return;
-  zoompinchEngine.value = new Zoompinch(
-    zoompinchRef.value,
-    props.offset,
-    props.transform.translateX,
-    props.transform.translateY,
-    props.transform.scale,
-    props.transform.rotate,
-    props.minScale,
-    props.maxScale
-  );
+  zoompinchEngine.value = new Zoompinch(zoompinchRef.value, props.offset, props.transform.translateX, props.transform.translateY, props.transform.scale, props.transform.rotate, props.minScale, props.maxScale);
 
-  zoompinchEngine.value.addEventListener("update", () => {
+  zoompinchEngine.value.addEventListener('update', () => {
     if (!zoompinchEngine.value) return;
     const newTransform = {
       translateX: zoompinchEngine.value.translateX,
@@ -104,20 +73,15 @@ onMounted(() => {
       scale: zoompinchEngine.value.scale,
       rotate: zoompinchEngine.value.rotate,
     };
-    if (
-      newTransform.translateX !== props.transform.translateX ||
-      newTransform.translateY !== props.transform.translateY ||
-      newTransform.scale !== props.transform.scale ||
-      newTransform.rotate !== props.transform.rotate
-    ) {
-      emit("update:transform", newTransform);
+    if (newTransform.translateX !== props.transform.translateX || newTransform.translateY !== props.transform.translateY || newTransform.scale !== props.transform.scale || newTransform.rotate !== props.transform.rotate) {
+      emit('update:transform', newTransform);
     }
 
     composePoint.value = (x: number, y: number) => {
       return zoompinchEngine.value!.composePoint(x, y);
     };
   });
-  zoompinchEngine.value.addEventListener("init", () => {
+  zoompinchEngine.value.addEventListener('init', () => {
     ready.value = true;
   });
 });
@@ -151,23 +115,24 @@ watch(
   },
   { deep: true }
 );
-watch(() => props.minScale, (newMinScale) => {
-  if (!zoompinchEngine.value) return;
-  zoompinchEngine.value.minScale = newMinScale;
-  zoompinchEngine.value.update();
-});
-watch(() => props.maxScale, (newMaxScale) => {
-  if (!zoompinchEngine.value) return;
-  zoompinchEngine.value.maxScale = newMaxScale;
-  zoompinchEngine.value.update();
-});
+watch(
+  () => props.minScale,
+  (newMinScale) => {
+    if (!zoompinchEngine.value) return;
+    zoompinchEngine.value.minScale = newMinScale;
+    zoompinchEngine.value.update();
+  }
+);
+watch(
+  () => props.maxScale,
+  (newMaxScale) => {
+    if (!zoompinchEngine.value) return;
+    zoompinchEngine.value.maxScale = newMaxScale;
+    zoompinchEngine.value.update();
+  }
+);
 
-const applyTransform = (
-  scale: number,
-  wrapperInnerCoords: [number, number],
-  canvasCoords: [number, number],
-  rotate?: number
-) => {
+const applyTransform = (scale: number, wrapperInnerCoords: [number, number], canvasCoords: [number, number], rotate?: number) => {
   if (!zoompinchEngine.value) return;
   if (rotate !== undefined) {
     zoompinchEngine.value.rotate = rotate;
@@ -236,24 +201,24 @@ const handleTouchend = (event: TouchEvent) => {
   }
 };
 
-window.addEventListener("gesturechange", handleGesturechange);
-window.addEventListener("gestureend", handleGestureend);
-window.addEventListener("mousemove", handleMousemove);
-window.addEventListener("mouseup", handleMouseup);
-window.addEventListener("touchmove", handleTouchmove);
-window.addEventListener("touchend", handleTouchend);
+window.addEventListener('gesturechange', handleGesturechange);
+window.addEventListener('gestureend', handleGestureend);
+window.addEventListener('mousemove', handleMousemove);
+window.addEventListener('mouseup', handleMouseup);
+window.addEventListener('touchmove', handleTouchmove);
+window.addEventListener('touchend', handleTouchend);
 onUnmounted(() => {
-  window.removeEventListener("gesturechange", handleGesturechange);
-  window.removeEventListener("gestureend", handleGestureend);
-  window.removeEventListener("mousemove", handleMousemove);
-  window.removeEventListener("mouseup", handleMouseup);
-  window.removeEventListener("touchmove", handleTouchmove);
-  window.removeEventListener("touchend", handleTouchend);
+  window.removeEventListener('gesturechange', handleGesturechange);
+  window.removeEventListener('gestureend', handleGestureend);
+  window.removeEventListener('mousemove', handleMousemove);
+  window.removeEventListener('mouseup', handleMouseup);
+  window.removeEventListener('touchmove', handleTouchmove);
+  window.removeEventListener('touchend', handleTouchend);
 });
 
 const normalizeClientCoords = (clientX: number, clientY: number) => {
   if (!zoompinchEngine.value) {
-    throw new Error("Zoompinch engine not initialized");
+    throw new Error('Zoompinch engine not initialized');
   }
   return zoompinchEngine.value.normalizeClientCoords(clientX, clientY);
 };

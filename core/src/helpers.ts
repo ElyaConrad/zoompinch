@@ -47,7 +47,6 @@ export function round(value: number, decimals: number) {
   return Math.round(value * factor) / factor;
 }
 
-
 export function detectTrackpad(event: WheelEvent) {
   var isTrackpad = false;
   if ((event as any).wheelDeltaY) {
@@ -69,7 +68,6 @@ export function isMultipleOf(n: number, multiples: number[]) {
 }
 
 export function getUntransformedRect(rect: DOMRect, tx: number, ty: number, scale: number, rotate: number) {
-
   // Inverse Translation
   let x = rect.left - tx;
   let y = rect.top - ty;

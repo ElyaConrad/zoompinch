@@ -101,38 +101,15 @@
         </div>
       </section>
       <section>
-        <n-button
-          @click="fit()"
-          type="success"
-          style="width: 100%"
-        >
-          Fit
-        </n-button>
+        <n-button @click="fit()" type="success" style="width: 100%"> Fit </n-button>
       </section>
     </header>
     <div class="projection-wrapper">
-      <zoompinch
-        ref="zoompinchRef"
-        :offset="offset"
-        v-model:transform="transform"
-        :min-scale="0.35"
-        :max-scale="10"
-        :rotation="rotation"
-        :bounds="bounds"
-        :mouse="mouseEvents"
-        :touch="touchEvents"
-        :wheel="wheelEvents"
-        :gesture="gestureEvents"
-      >
+      <zoompinch ref="zoompinchRef" :offset="offset" v-model:transform="transform" :min-scale="0.35" :max-scale="10" :rotation="rotation" :bounds="bounds" :mouse="mouseEvents" :touch="touchEvents" :wheel="wheelEvents" :gesture="gestureEvents">
         <img src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
         <template #matrix="{ composePoint }">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="pointer-events: all;" @click="handleClickOnLayer">
-            <circle
-              :cx="composePoint(1536 / 2, 2048 / 2)[0]"
-              :cy="composePoint(1536 / 2, 2048 / 2)[1]"
-              r="5"
-              style="fill: #f00"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="pointer-events: all" @click="handleClickOnLayer">
+            <circle :cx="composePoint(1536 / 2, 2048 / 2)[0]" :cy="composePoint(1536 / 2, 2048 / 2)[1]" r="5" style="fill: #f00" />
           </svg>
         </template>
       </zoompinch>
@@ -141,10 +118,10 @@
 </template>
 
 <script setup lang="ts">
-import {Zoompinch} from "@zoompinch/vue";
-import "@zoompinch/vue/style.css";
-import { onMounted, reactive, ref, watch, watchEffect } from "vue";
-import { NInputNumber, NSwitch, NButton } from "naive-ui";
+import { Zoompinch } from '@zoompinch/vue';
+import '@zoompinch/vue/style.css';
+import { onMounted, reactive, ref, watch, watchEffect } from 'vue';
+import { NInputNumber, NSwitch, NButton } from 'naive-ui';
 
 // Flicker bug reproducable: 100,0,0.1,180
 
@@ -178,12 +155,11 @@ function handleClickOnLayer(event: MouseEvent) {
   if (!zoompinchRef.value) return;
   const [x, y] = zoompinchRef.value.normalizeClientCoords(event.clientX, event.clientY);
   alert(`Clicked on layer at normalized coords: ${x.toFixed(2)}, ${y.toFixed(2)}`);
-  
 }
 function fit() {
   if (!zoompinchRef.value) return;
   // transform.value = { translateX: 0, translateY: 0, scale: 1, radians: 0 };
-  console.log("FITTING!!!");
+  console.log('FITTING!!!');
   zoompinchRef.value.applyTransform(1, [0.5, 0.5], [0.5, 0.5], 0);
 }
 // onMounted(() => {
