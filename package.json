@@ -7,7 +7,7 @@
     "vue"
   ],
   "scripts": {
-    "build": "npm run build -ws",
+    "build": "pnpm -r build",
     "changeset": "changeset",
     "version": "changeset version",
     "publish": "changeset publish"
