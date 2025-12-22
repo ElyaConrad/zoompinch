@@ -23,7 +23,7 @@ Adside of touch, mouse and wheel events, **gesture events** (Safari Desktop) are
 - 📊 **Reactive transforms** - `translateX`, `translateY`, `scale`, `rotate`
 - 🖼️ **Dynamic content** - Works with lazy-loaded images
 - 🎯 **Matrix overlays** - Project elements onto the canvas
-- 🎨 **Framework-agnostic** - Vue, React, Web Components, or vanilla JS
+- 🎨 **Framework-agnostic** - Vue, Web Components or vanilla JS
 
 ## Quick Start
 
