@@ -43,7 +43,11 @@ jobs:
 
       - name: Install dependencies
         working-directory: elements
-        run: npm install
+        run: npm install @zoompinch/core@latest
+
+      - name: Copy the local core package
+        run: cp -r ../core ./node_modules/@zoompinch/core
+        working-directory: elements
 
       - name: Build
         working-directory: elements
@@ -67,7 +71,11 @@ jobs:
         run: npm cache clean --force
       - name: Install dependencies
         working-directory: vue
-        run: npm install
+        run: npm install @zoompinch/core@latest
+
+      - name: Copy the local core package
+        run: cp -r ../core ./node_modules/@zoompinch/core
+        working-directory: vue
       
       - name: Build
         working-directory: vue
