@@ -37,11 +37,11 @@ npm install @zoompinch/vue
 <template>
   <zoompinch
     ref="zoompinchRef"
-    style="width: 800px; height: 600px"
+    style="width: 800px; height: 600px; border: 1px solid #f00;"
     v-model:transform="transform"
     @init="handleInit"
   >
-    <img width="1536" height="2048" src="image.jpg" />
+    <img width="1536" height="2048" src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
     
     <template #matrix="{ composePoint, canvasWidth, canvasHeight }">
       <svg width="100%" height="100%">
@@ -99,7 +99,7 @@ npm install @zoompinch/elements
 </head>
 <body>
   <zoom-pinch id="zoomPinch" clamp-bounds="true">
-    <img width="1536" height="2048" src="image.jpg" />
+    <img width="1536" height="2048" src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
     
     <svg slot="matrix" width="100%" height="100%">
       <circle id="marker" r="8" fill="red" />
