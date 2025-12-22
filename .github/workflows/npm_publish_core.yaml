@@ -38,6 +38,9 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
 
+      - name: Clear npm cache
+        run: npm cache clean --force
+
       - name: Install dependencies
         working-directory: elements
         run: npm install
@@ -60,6 +63,8 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
+      - name: Clear npm cache
+        run: npm cache clean --force
       - name: Install dependencies
         working-directory: vue
         run: npm install
