@@ -37,9 +37,9 @@ npm install @zoompinch/vue
 <template>
   <zoompinch
     ref="zoompinchRef"
+    style="width: 800px; height: 600px"
     v-model:transform="transform"
     @init="handleInit"
-    class="viewer"
   >
     <img width="1536" height="2048" src="image.jpg" />
     
@@ -98,7 +98,7 @@ npm install @zoompinch/elements
   </style>
 </head>
 <body>
-  <zoom-pinch id="viewer" clamp-bounds="true">
+  <zoom-pinch id="zoomPinch" clamp-bounds="true">
     <img width="1536" height="2048" src="image.jpg" />
     
     <svg slot="matrix" width="100%" height="100%">
@@ -107,16 +107,16 @@ npm install @zoompinch/elements
   </zoom-pinch>
 
   <script type="module">
-    const viewer = document.getElementById('viewer');
+    const zoomPinch = document.getElementById('zoomPinch');
     
-    viewer.addEventListener('init', () => {
-      viewer.applyTransform(1, [0.5, 0.5], [0.5, 0.5]);
+    zoomPinch.addEventListener('init', () => {
+      zoomPinch.applyTransform(1, [0.5, 0.5], [0.5, 0.5]);
     });
     
-    viewer.addEventListener('update', () => {
-      const [cx, cy] = viewer.composePoint(
-        viewer.canvasWidth / 2,
-        viewer.canvasHeight / 2
+    zoomPinch.addEventListener('update', () => {
+      const [cx, cy] = zoomPinch.composePoint(
+        zoomPinch.canvasWidth / 2,
+        zoomPinch.canvasHeight / 2
       );
       document.getElementById('marker').setAttribute('cx', cx);
       document.getElementById('marker').setAttribute('cy', cy);
@@ -132,9 +132,9 @@ npm install @zoompinch/elements
 
 | Package | Description | Links |
 |---------|-------------|-------|
-| **@zoompinch/core** | Core engine (framework-agnostic) | [README](./packages/core/README.md) · [npm](https://www.npmjs.com/package/@zoompinch/core) |
-| **@zoompinch/vue** | Vue 3 bindings | [README](./packages/vue/README.md) · [npm](https://www.npmjs.com/package/@zoompinch/vue) |
-| **@zoompinch/elements** | Web Components | [README](./packages/elements/README.md) · [npm](https://www.npmjs.com/package/@zoompinch/elements) |
+| **@zoompinch/core** | Core engine (framework-agnostic) | [README](./core/README.md) · [npm](https://www.npmjs.com/package/@zoompinch/core) |
+| **@zoompinch/vue** | Vue 3 bindings | [README](./vue/README.md) · [npm](https://www.npmjs.com/@zoompinch/vue) |
+| **@zoompinch/elements** | Web Components | [README](./elements/README.md) · [npm](https://www.npmjs.com/@zoompinch/elements) |
 
 ## Core API
 
@@ -222,7 +222,7 @@ For custom integrations, use the core engine directly:
 npm install @zoompinch/core
 ```
 
-**→ [Full Core Engine Documentation](./packages/core/README.md)**
+**→ [Full Core Engine Documentation](https://github.com/ElyaConrad/zoompinch/core/README.md)**
 
 ## License
 

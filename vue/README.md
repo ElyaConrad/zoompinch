@@ -38,7 +38,6 @@ npm install @zoompinch/vue
         :gesture="true"
         @init="handleInit"
         @click="handleClick"
-        class="viewer"
     >
         <img width="1536" height="2048"  src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
         <template #matrix="{ composePoint, normalizeClientCoords, canvasWidth, canvasHeight }">
@@ -331,7 +330,7 @@ Client Coords → normalizeClientCoords() → Canvas Coords → composePoint() �
    <img src="image.jpg" draggable="false" style="user-select: none;" />
    ```
 
-4. **Use clamp bounds for image viewers:**
+4. **Use clamp bounds:**
    ```vue
    <zoompinch :clamp-bounds="true" :min-scale="0.5" :max-scale="4">
    ```

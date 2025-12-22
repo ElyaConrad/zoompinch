@@ -245,7 +245,7 @@ Use `slot="matrix"` for overlay elements that follow the canvas transform.
 </zoom-pinch>
 
 <script>
-  const viewer = document.getElementById('zoomPinch');
+  const zoomPinch = document.getElementById('zoomPinch');
   const marker = document.getElementById('marker');
   
   zoomPinch.addEventListener('update', () => {
