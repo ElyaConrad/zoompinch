@@ -95,7 +95,7 @@
           <div class="field">
             <div class="description">Bounds</div>
             <div class="value">
-              <n-switch v-model:value="bounds" />
+              <n-switch v-model:value="clampBounds" />
             </div>
           </div>
         </div>
@@ -105,7 +105,7 @@
       </section>
     </header>
     <div class="projection-wrapper">
-      <zoompinch ref="zoompinchRef" :offset="offset" v-model:transform="transform" :min-scale="0.35" :max-scale="10" :rotation="rotation" :bounds="bounds" :mouse="mouseEvents" :touch="touchEvents" :wheel="wheelEvents" :gesture="gestureEvents">
+      <zoompinch ref="zoompinchRef" :offset="offset" v-model:transform="transform" :min-scale="0.35" :max-scale="10" :rotation="rotation" :clamp-bounds="clampBounds" :mouse="mouseEvents" :touch="touchEvents" :wheel="wheelEvents" :gesture="gestureEvents">
         <img src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public"></img>
         <template #matrix="{ composePoint }">
           <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="pointer-events: all" @click="handleClickOnLayer">
@@ -126,15 +126,15 @@ import { NInputNumber, NSwitch, NButton } from 'naive-ui';
 // Flicker bug reproducable: 100,0,0.1,180
 
 const rotation = ref(true);
-const bounds = ref(false);
-watch(bounds, (newValue) => {
+const clampBounds = ref(false);
+watch(clampBounds, (newValue) => {
   if (newValue) {
     rotation.value = false;
   }
 });
 watch(rotation, (newValue) => {
   if (newValue) {
-    bounds.value = false;
+    clampBounds.value = false;
   }
 });
 const zoompinchRef = ref<InstanceType<typeof Zoompinch>>();
