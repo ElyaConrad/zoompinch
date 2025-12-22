@@ -4,14 +4,14 @@
       <slot name="default" />
     </div>
     <div class="matrix">
-      <slot v-if="ready && composePoint" name="matrix" :compose-point="composePoint" />
+      <slot v-if="ready && composePoint" name="matrix" :compose-point="composePoint" :normalize-client-coords="normalizeClientCoords" :canvas-width="canvasWidth" :canvas-height="canvasHeight" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Transform, Zoompinch } from '@zoompinch/core';
-import { ref, toRef, computed, onMounted, watch, toRefs, onUnmounted, reactive, watchEffect } from 'vue';
+import { ref, toRef, computed, onMounted, watch, toRefs, onUnmounted, reactive, watchEffect, VNode } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -24,7 +24,7 @@ const props = withDefaults(
     };
     maxScale?: number;
     minScale?: number;
-    bounds?: boolean;
+    clampBounds?: boolean;
     rotation?: boolean;
     mouse?: boolean;
     wheel?: boolean;
@@ -36,7 +36,7 @@ const props = withDefaults(
     offset: () => ({ left: 0, top: 0, right: 0, bottom: 0 }),
     minScale: 0.5,
     maxScale: 10,
-    bounds: false,
+    clampBounds: false,
     rotation: true,
     mouse: true,
     wheel: true,
@@ -46,6 +46,7 @@ const props = withDefaults(
 );
 const emit = defineEmits<{
   'update:transform': [transform: Transform];
+  'init': [];
   dragGestureStart: [event: MouseEvent | TouchEvent | WheelEvent];
   dragGestureEnd: [event: MouseEvent | TouchEvent | WheelEvent];
 }>();
@@ -61,9 +62,16 @@ const composePoint = ref<(x: number, y: number) => [number, number]>(() => {
   throw new Error('Not initialized yet');
 });
 
+const canvasWidth = ref(0);
+const canvasHeight = ref(0);
+
 onMounted(() => {
   if (!zoompinchRef.value) return;
-  zoompinchEngine.value = new Zoompinch(zoompinchRef.value, props.offset, props.transform.translateX, props.transform.translateY, props.transform.scale, props.transform.rotate, props.minScale, props.maxScale);
+  zoompinchEngine.value = new Zoompinch(zoompinchRef.value, props.offset, props.transform.translateX, props.transform.translateY, props.transform.scale, props.transform.rotate, props.minScale, props.maxScale, props.clampBounds, props.rotation);
+
+  zoompinchEngine.value.addEventListener('init', () => {
+    emit('init');
+  });
 
   zoompinchEngine.value.addEventListener('update', () => {
     if (!zoompinchEngine.value) return;
@@ -80,6 +88,8 @@ onMounted(() => {
     composePoint.value = (x: number, y: number) => {
       return zoompinchEngine.value!.composePoint(x, y);
     };
+    canvasWidth.value = zoompinchEngine.value.canvasBounds.width;
+    canvasHeight.value = zoompinchEngine.value.canvasBounds.height;
   });
   zoompinchEngine.value.addEventListener('init', () => {
     ready.value = true;
@@ -131,6 +141,19 @@ watch(
     zoompinchEngine.value.update();
   }
 );
+watch(() => props.clampBounds, (newClampBounds) => {
+  if (!zoompinchEngine.value) return;
+  zoompinchEngine.value.clampBounds = newClampBounds;
+  // The clamp is an explicit user intention
+  // The reason is that we do not want side effects when toggling the clamp
+  zoompinchEngine.value.setTranslateFromUserGesture(zoompinchEngine.value.translateX, zoompinchEngine.value.translateY);
+  zoompinchEngine.value.update();
+});
+watch(() => props.rotation, (newRotation) => {
+  if (!zoompinchEngine.value) return;
+  zoompinchEngine.value.rotation = newRotation;
+  zoompinchEngine.value.update();
+});
 
 const applyTransform = (scale: number, wrapperInnerCoords: [number, number], canvasCoords: [number, number], rotate?: number) => {
   if (!zoompinchEngine.value) return;
@@ -222,11 +245,25 @@ const normalizeClientCoords = (clientX: number, clientY: number) => {
   }
   return zoompinchEngine.value.normalizeClientCoords(clientX, clientY);
 };
+
+const rotateCanvas = (x: number, y: number, radians: number) => {
+  if (!zoompinchEngine.value) return;
+  zoompinchEngine.value.rotateCanvas(x, y, radians);
+};
+
+const slots = defineSlots<{
+  default: () => VNode | VNode[];
+  matrix: (args: { composePoint: (x: number, y: number) => [number, number]; normalizeClientCoords: (clientX: number, clientY: number) => [number, number]; canvasWidth: number; canvasHeight: number }) => VNode | VNode[];
+}>();
+
 defineExpose({
   applyTransform,
   composePoint,
   normalizeClientCoords,
   zoompinchEngine,
+  canvasWidth,
+  canvasHeight,
+  rotateCanvas
 });
 </script>
 

@@ -4,7 +4,7 @@
       <h1>Zoompinch</h1>
     </div>
     <div class="actions">
-      <a href="https://github.com/MauriceConrad/zoompinch" target="_blank">
+      <a href="https://github.com/ElyaConrad/zoompinch" target="_blank">
         <n-icon size="medium">
           <logo-github />
         </n-icon>

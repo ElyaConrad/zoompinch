@@ -60,6 +60,8 @@ export class ZoomPinchElement extends HTMLElement {
     const initialOffsetRight = Number(this.getAttribute('offset-right'));
     const initialOffsetBottom = Number(this.getAttribute('offset-bottom'));
     const initialOffsetLeft = Number(this.getAttribute('offset-left'));
+    const initialClampBounds = this.getAttribute('clamp-bounds') === 'true';
+    const initialRotation = this.getAttribute('rotation') === 'true';
 
     this.engine = new Zoompinch(
       this.contentEl,
@@ -74,7 +76,8 @@ export class ZoomPinchElement extends HTMLElement {
       initialScale,
       initialRotate,
       !isNaN(initialMinScale) ? initialMinScale : undefined,
-      !isNaN(initialMaxScale) ? initialMaxScale : undefined
+      !isNaN(initialMaxScale) ? initialMaxScale : undefined,
+      initialClampBounds
     );
 
     this.contentEl.addEventListener('wheel', (e) => this.engine.handleWheel(e));
@@ -110,11 +113,14 @@ export class ZoomPinchElement extends HTMLElement {
 
       this.dispatchEvent(new Event('update'));
     });
+    this.engine.addEventListener('init', () => {
+      this.dispatchEvent(new Event('init'));
+    });
   }
   private disconnectedCallback() {
     this.engine.destroy();
   }
-  static observedAttributes = ['translate-x', 'translate-y', 'scale', 'rotate', 'min-scale', 'max-scale', 'offset-top', 'offset-right', 'offset-bottom', 'offset-left'];
+  static observedAttributes = ['translate-x', 'translate-y', 'scale', 'rotate', 'min-scale', 'max-scale', 'offset-top', 'offset-right', 'offset-bottom', 'offset-left', 'clamp-bounds', 'rotation'];
   private attributeChangedCallback(name: string, _: string, value: string) {
     if (!this.engine) return;
     switch (name) {
@@ -176,6 +182,22 @@ export class ZoomPinchElement extends HTMLElement {
         };
         this.engine.update();
         break;
+      case 'clamp-bounds':
+        const clampBounds = value === 'true';
+        if (this.engine.clampBounds !== clampBounds) {
+          this.engine.clampBounds = clampBounds;
+          // The clamp is an explicit user intention
+          // The reason is that we do not want side effects when toggling the clamp
+          this.engine.setTranslateFromUserGesture(this.engine.translateX, this.engine.translateY);
+          this.engine.update();
+        }
+        break;
+      case 'rotation':
+        const rotation = value === 'true';
+        if (this.engine.rotation !== rotation) {
+          this.engine.rotation = rotation;
+          this.engine.update();
+        }
     }
   }
   public get canvasWidth() {
