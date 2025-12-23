@@ -331,7 +331,7 @@ For custom integrations, use the core engine directly:
 npm install @zoompinch/core
 ```
 
-**→ [Full Core Engine Documentation](https://github.com/ElyaConrad/zoompinch/core/README.md)**
+**→ [Full Core Engine Documentation](./core/README.md)**
 
 ## License
 
