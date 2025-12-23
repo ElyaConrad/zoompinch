@@ -75,6 +75,85 @@ export function detectTrackpad(event: WheelEvent): boolean {
     return isTrackpad;
   }
 }
+export function normalizeWheelDelta(event: WheelEvent): { deltaX: number; deltaY: number } {
+  let { deltaX, deltaY, deltaMode } = event;
+
+  // Step 1: Convert to pixels based on deltaMode
+  if (deltaMode === 1) {
+    // Line mode
+    deltaX *= 40;
+    deltaY *= 40;
+  } else if (deltaMode === 2) {
+    // Page mode
+    deltaX *= 800;
+    deltaY *= 800;
+  }
+
+  // Step 2: Detect trackpad
+  const isTrackpad = detectTrackpad(event);
+
+  if (!isTrackpad) {
+    // Step 3: For mouse wheels, apply adaptive scaling
+    const absDeltaY = Math.abs(deltaY);
+    const absDeltaX = Math.abs(deltaX);
+
+    // Normalize mouse wheel values to a consistent range
+    // Small values (0-10): likely Windows mouse with small increments
+    // Large values (40+): likely macOS mouse
+    if (absDeltaY < 10) {
+      deltaY *= 5; // Amplify small Windows values
+    } else if (absDeltaY > 30) {
+      deltaY *= 0.5; // Reduce large macOS values
+    }
+
+    if (absDeltaX < 10) {
+      deltaX *= 5;
+    } else if (absDeltaX > 30) {
+      deltaX *= 0.5;
+    }
+  }
+
+  return { deltaX, deltaY };
+}
+// Simplified version
+export function normalizeWheel(event: WheelEvent) {
+  const PIXEL_STEP = 10;
+  const LINE_HEIGHT = 40;
+  const PAGE_HEIGHT = 800;
+
+  let sX = 0, sY = 0, pX = 0, pY = 0;
+
+  // Legacy
+  if ('detail' in event) { sY = event.detail; }
+  if ('wheelDelta' in event) { sY = -(event as any).wheelDelta / 120; }
+  if ('wheelDeltaY' in event) { sY = -(event as any).wheelDeltaY / 120; }
+  if ('wheelDeltaX' in event) { sX = -(event as any).wheelDeltaX / 120; }
+
+  // Modern
+  if ('deltaY' in event) { pY = event.deltaY; }
+  if ('deltaX' in event) { pX = event.deltaX; }
+
+  if ((pX || pY) && event.deltaMode) {
+    if (event.deltaMode === 1) { // delta in LINE units
+      pX *= LINE_HEIGHT;
+      pY *= LINE_HEIGHT;
+    } else { // delta in PAGE units
+      pX *= PAGE_HEIGHT;
+      pY *= PAGE_HEIGHT;
+    }
+  }
+
+  // Fall-back if spin cannot be determined
+  if (pX && !sX) { sX = (pX < 1) ? -1 : 1; }
+  if (pY && !sY) { sY = (pY < 1) ? -1 : 1; }
+
+  return {
+    spinX: sX,
+    spinY: sY,
+    pixelX: pX,
+    pixelY: pY
+  };
+}
 export function isMultipleOf(n: number, multiples: number[]) {
   const factor = multiples.find((m) => n % m === 0);
   if (factor) {

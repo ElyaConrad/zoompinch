@@ -1,4 +1,4 @@
-import { clamp, degreeToRadians, rotatePoint, detectTrackpad, isMultipleOf, getUntransformedRect } from './helpers';
+import { clamp, degreeToRadians, rotatePoint, detectTrackpad, isMultipleOf, getUntransformedRect, normalizeWheelDelta } from './helpers';
 
 export type Offset = {
   top: number;
@@ -165,6 +165,8 @@ export class Zoompinch extends EventTarget {
 
     const isTrackpad = detectTrackpad(event);
 
+    
+
     if (!isTrackpad) {
       const wheelNormalizationFactor = 120;
 
@@ -200,7 +202,11 @@ export class Zoompinch extends EventTarget {
       this.setTranslateFromUserGesture(translateX, translateY);
       this.scale = newScale;
     } else {
+
       const panMultiplier = isTrackpad ? 1 * this.translateSpeedAppleTrackpad : 25 * this.translateSpeed;
+
+      
+      
 
       this.setTranslateFromUserGesture(this.translateX - deltaX * panMultiplier, this.translateY - deltaY * panMultiplier);
     }

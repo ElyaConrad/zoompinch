@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { Zoompinch } from '../src/index';
-import { ZoompinchRef } from '../src/Zoompinch';
-import { Transform } from '@zoompinch/core';
+import {Zoompinch } from '@zoompinch/react';
+import type { Transform, ZoompinchRef } from '@zoompinch/react';
 
 function App() {
   const zoompinchRef = useRef<ZoompinchRef>(null);

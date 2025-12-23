@@ -2,6 +2,8 @@ import React, { useRef, useEffect, ReactNode, useState, forwardRef, useImperativ
 import { Zoompinch as ZoompinchCore, Transform } from '@zoompinch/core';
 import './Zoompinch.css';
 
+export type {Transform};
+
 export interface ZoompinchRef {
   applyTransform: (
     scale: number, 
