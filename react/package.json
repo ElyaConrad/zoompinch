@@ -1,6 +1,6 @@
 {
   "name": "@zoompinch/react",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "React components for Zoompinch",
   "main": "./dist/zoompinch-react.umd.js",
   "module": "./dist/zoompinch-react.es.js",
@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -54,10 +54,11 @@
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "typescript": "^5.9.3",
-    "vite": "^6.4.1"
+    "vite": "^6.4.1",
+    "vite-plugin-dts": "^4.5.4"
   },
   "dependencies": {
-    "@zoompinch/core": "^0.0.31",
+    "@zoompinch/core": "^0.0.32",
     "@zoompinch/react": "^0.0.7"
   }
 }
