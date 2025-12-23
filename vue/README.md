@@ -56,6 +56,7 @@ npm install @zoompinch/vue
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Zoompinch } from '@zoompinch/vue';
+import '@zoompinch/vue/style.css';
 
 const zoompinchRef = ref<InstanceType<typeof Zoompinch>>();
 const transform = ref({
