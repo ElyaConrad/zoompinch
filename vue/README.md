@@ -32,6 +32,10 @@ npm install @zoompinch/vue
         :max-scale="4"
         :clamp-bounds="false"
         :rotation="true"
+        :zoom-speed="1"
+        :translate-speed="1"
+        :zoom-speed-apple-trackpad="1"
+        :translate-speed-apple-trackpad="1"
         :mouse="false"
         :wheel="true"
         :touch="true"
@@ -103,6 +107,34 @@ function handleClick(event: MouseEvent) {
 | `wheel` | `boolean` | `true` | Enable wheel/trackpad |
 | `touch` | `boolean` | `true` | Enable touch gestures |
 | `gesture` | `boolean` | `true` | Enable Safari gesture events |
+
+
+### Speed Multipliers
+
+#### The Problem
+Pan and zoom interactions behave differently across input devices:
+- **Apple Trackpads**: Provide smooth, precise scroll values with natural momentum
+- **Mouse Wheels**: Send large, discrete jumps (typically ±100 or ±120 per scroll tick)
+
+Without normalization, this causes:
+- Uncomfortably large zoom jumps when using mouse wheels
+- Panning that's either too slow (trackpad-optimized) or too fast (mouse-optimized)
+- Inconsistent user experience across Windows, Mac, and Linux
+
+#### The Solution
+The library automatically detects the input device type and applies different speed multipliers:
+- **Trackpad gestures** use base values for smooth, 1:1 response
+- **Mouse wheel actions** use amplified values for comfortable discrete steps
+
+You can fine-tune these multipliers for your specific use case using the speed props.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `translate-speed` | `number` | `1` | Pan speed multiplier for mouse wheels |
+| `zoom-speed` | `number` | `1` | Zoom speed multiplier for mouse wheels |
+| `translate-speed-apple-trackpad` | `number` | `1` | Pan speed multiplier for trackpads |
+| `zoom-speed-apple-trackpad` | `number` | `1` | Zoom speed multiplier for trackpads |
+
 
 **Note:** `min-scale`, `max-scale`, `rotation`, and `clamp-bounds` only apply during user interaction. Programmatic changes via ref methods are unrestricted.
 

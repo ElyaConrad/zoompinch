@@ -23,6 +23,11 @@ export class Zoompinch extends EventTarget {
   wrapperBounds!: Bounds;
   canvasBounds!: Bounds;
 
+  public translateSpeed = 1;
+  public zoomSpeed = 1;
+  public translateSpeedAppleTrackpad = 1;
+  public zoomSpeedAppleTrackpad = 1;
+
   constructor(
     public element: HTMLElement,
     public offset: Offset,
@@ -33,7 +38,7 @@ export class Zoompinch extends EventTarget {
     public minScale = 0.1,
     public maxScale = 10,
     public clampBounds = false,
-    public rotation = true
+    public rotation = true,
   ) {
     super();
 
@@ -147,20 +152,36 @@ export class Zoompinch extends EventTarget {
   }
   public handleWheel(event: WheelEvent) {
     let { deltaX, deltaY, ctrlKey } = event;
-    const mouseMultiples = [120, 100];
-    const mouseFactor = ctrlKey ? 2 : 2;
-    if (!detectTrackpad(event)) {
-      if (Math.abs(deltaX) === 120 || Math.abs(deltaX) === 200) {
-        deltaX = (deltaX / ((100 / mouseFactor) * isMultipleOf(deltaX, mouseMultiples))) * Math.sign(deltaX);
+
+    const isTrackpad = detectTrackpad(event);
+
+    if (!isTrackpad) {
+      const wheelNormalizationFactor = 120;
+
+      if (Math.abs(deltaY) >= 100) {
+        deltaY = Math.sign(deltaY) * (Math.abs(deltaY) / wheelNormalizationFactor);
       }
-      if (Math.abs(deltaY) === 120 || Math.abs(deltaY) === 200) {
-        deltaY = (deltaY / ((100 / mouseFactor) * isMultipleOf(deltaY, mouseMultiples))) * Math.sign(deltaY);
+      if (Math.abs(deltaX) >= 100) {
+        deltaX = Math.sign(deltaX) * (Math.abs(deltaX) / wheelNormalizationFactor);
       }
     }
+
     const currScale = this.scale;
+
     if (ctrlKey) {
-      const scaleDelta = (-deltaY / 100) * currScale;
-      const newScale = clamp(currScale + scaleDelta, this.minScale, this.maxScale);
+      const zoomSpeed = isTrackpad ? 0.01 * this.zoomSpeedAppleTrackpad : 0.1 * this.zoomSpeed;
+      const scaleFactor = 1 + -deltaY * zoomSpeed;
+
+      let newScale = currScale * scaleFactor;
+
+      newScale = clamp(newScale, this.minScale, this.maxScale);
+
+      if (newScale === this.minScale || newScale === this.maxScale) {
+        if ((newScale === this.minScale && scaleFactor < 1) || (newScale === this.maxScale && scaleFactor > 1)) {
+          event.preventDefault();
+          return;
+        }
+      }
 
       const coords = this.relativeWrapperCoordinatesFromClientCoords(event.clientX, event.clientY);
 
@@ -169,7 +190,9 @@ export class Zoompinch extends EventTarget {
       this.setTranslateFromUserGesture(translateX, translateY);
       this.scale = newScale;
     } else {
-      this.setTranslateFromUserGesture(this.translateX - deltaX, this.translateY - deltaY);
+      const panMultiplier = isTrackpad ? 1 * this.translateSpeedAppleTrackpad : 25 * this.translateSpeed;
+
+      this.setTranslateFromUserGesture(this.translateX - deltaX * panMultiplier, this.translateY - deltaY * panMultiplier);
     }
 
     this.update();
@@ -375,7 +398,7 @@ export class Zoompinch extends EventTarget {
   public rotateCanvas(x: number, y: number, rotate: number) {
     const xRel = x / this.canvasBounds.width;
     const yRel = y / this.canvasBounds.height;
-    
+
     const virtualPoint = this.composeRelPoint(xRel, yRel, this.scale, 0, 0, rotate);
     const currPoint = this.composeRelPoint(xRel, yRel);
     this.setTranslateFromUserGesture(currPoint[0] - virtualPoint[0], currPoint[1] - virtualPoint[1]);

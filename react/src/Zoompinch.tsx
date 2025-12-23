@@ -35,6 +35,10 @@ export interface ZoompinchProps {
   wheel?: boolean;
   touch?: boolean;
   gesture?: boolean;
+  zoomSpeed?: number;
+  translateSpeed?: number;
+  zoomSpeedAppleTrackpad?: number;
+  translateSpeedAppleTrackpad?: number;
   children?: ReactNode;
   matrix?: ReactNode | ((props: { composePoint: (x: number, y: number) => [number, number]; normalizeClientCoords: (clientX: number, clientY: number) => [number, number]; canvasWidth: number; canvasHeight: number }) => ReactNode);
   onInit?: () => void;
@@ -56,6 +60,10 @@ export const Zoompinch = forwardRef<ZoompinchRef, ZoompinchProps>(({
   wheel = true,
   touch = true,
   gesture = true,
+  zoomSpeed,
+  translateSpeed,
+  zoomSpeedAppleTrackpad,
+  translateSpeedAppleTrackpad,
   children,
   matrix,
   style,
@@ -129,7 +137,18 @@ export const Zoompinch = forwardRef<ZoompinchRef, ZoompinchProps>(({
     // Jetzt mit den Props initialisieren
     zoompinchEngine.current = new ZoompinchCore(zoompinchRef.current, offset, transform.translateX, transform.translateY, transform.scale, transform.rotate, minScale, maxScale, clampBounds, rotation);
 
-    console.log('Zoompinch initialisiert mit Props!');
+    if (zoomSpeed !== undefined) {
+      zoompinchEngine.current.zoomSpeed = zoomSpeed;
+    }
+    if (translateSpeed !== undefined) {
+      zoompinchEngine.current.translateSpeed = translateSpeed;
+    }
+    if (zoomSpeedAppleTrackpad !== undefined) {
+      zoompinchEngine.current.zoomSpeedAppleTrackpad = zoomSpeedAppleTrackpad;
+    }
+    if (translateSpeedAppleTrackpad !== undefined) {
+      zoompinchEngine.current.translateSpeedAppleTrackpad = translateSpeedAppleTrackpad;
+    }
 
     zoompinchEngine.current.addEventListener('update', () => {
       if (!zoompinchEngine.current) return;
@@ -216,6 +235,38 @@ export const Zoompinch = forwardRef<ZoompinchRef, ZoompinchProps>(({
     zoompinchEngine.current.rotation = rotation;
     zoompinchEngine.current.update();
   }, [rotation]);
+
+  useEffect(() => {
+    if (!zoompinchEngine.current || !ready.current) return;
+
+    if (zoomSpeed !== undefined) {
+      zoompinchEngine.current.zoomSpeed = zoomSpeed;
+    }
+  }, [zoomSpeed]);
+
+  useEffect(() => {
+    if (!zoompinchEngine.current || !ready.current) return;
+
+    if (translateSpeed !== undefined) {
+      zoompinchEngine.current.translateSpeed = translateSpeed;
+    }
+  }, [translateSpeed]);
+
+  useEffect(() => {
+    if (!zoompinchEngine.current || !ready.current) return;
+
+    if (zoomSpeedAppleTrackpad !== undefined) {
+      zoompinchEngine.current.zoomSpeedAppleTrackpad = zoomSpeedAppleTrackpad;
+    }
+  }, [zoomSpeedAppleTrackpad]);
+
+  useEffect(() => {
+    if (!zoompinchEngine.current || !ready.current) return;
+
+    if (translateSpeedAppleTrackpad !== undefined) {
+      zoompinchEngine.current.translateSpeedAppleTrackpad = translateSpeedAppleTrackpad;
+    }
+  }, [translateSpeedAppleTrackpad]);
 
   const handleWheel = (event: WheelEvent) => {
     if (!zoompinchEngine.current || !wheel) return;

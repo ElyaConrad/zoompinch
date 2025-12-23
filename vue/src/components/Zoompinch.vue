@@ -30,6 +30,10 @@ const props = withDefaults(
     wheel?: boolean;
     touch?: boolean;
     gesture?: boolean;
+    zoomSpeed?: number;
+    translateSpeed?: number;
+    zoomSpeedAppleTrackpad?: number;
+    translateSpeedAppleTrackpad?: number;
   }>(),
   {
     transform: () => ({ translateX: 0, translateY: 0, scale: 1, rotate: 0 }),
@@ -68,6 +72,19 @@ const canvasHeight = ref(0);
 onMounted(() => {
   if (!zoompinchRef.value) return;
   zoompinchEngine.value = new Zoompinch(zoompinchRef.value, props.offset, props.transform.translateX, props.transform.translateY, props.transform.scale, props.transform.rotate, props.minScale, props.maxScale, props.clampBounds, props.rotation);
+
+  if (props.zoomSpeed !== undefined) {
+    zoompinchEngine.value.zoomSpeed = props.zoomSpeed;
+  }
+  if (props.translateSpeed !== undefined) {
+    zoompinchEngine.value.translateSpeed = props.translateSpeed;
+  }
+  if (props.zoomSpeedAppleTrackpad !== undefined) {
+    zoompinchEngine.value.zoomSpeedAppleTrackpad = props.zoomSpeedAppleTrackpad;
+  }
+  if (props.translateSpeedAppleTrackpad !== undefined) {
+    zoompinchEngine.value.translateSpeedAppleTrackpad = props.translateSpeedAppleTrackpad;
+  }
 
   zoompinchEngine.value.addEventListener('init', () => {
     emit('init');
@@ -153,6 +170,23 @@ watch(() => props.rotation, (newRotation) => {
   if (!zoompinchEngine.value) return;
   zoompinchEngine.value.rotation = newRotation;
   zoompinchEngine.value.update();
+});
+
+watch(() => props.zoomSpeed, () => {
+  if (!zoompinchEngine.value || props.zoomSpeed === undefined) return;
+  zoompinchEngine.value.zoomSpeed = props.zoomSpeed;
+});
+watch(() => props.translateSpeed, () => {
+  if (!zoompinchEngine.value || props.translateSpeed === undefined) return;
+  zoompinchEngine.value.translateSpeed = props.translateSpeed;
+});
+watch(() => props.zoomSpeedAppleTrackpad, () => {
+  if (!zoompinchEngine.value || props.zoomSpeedAppleTrackpad === undefined) return;
+  zoompinchEngine.value.zoomSpeedAppleTrackpad = props.zoomSpeedAppleTrackpad;
+});
+watch(() => props.translateSpeedAppleTrackpad, () => {
+  if (!zoompinchEngine.value || props.translateSpeedAppleTrackpad === undefined) return;
+  zoompinchEngine.value.translateSpeedAppleTrackpad = props.translateSpeedAppleTrackpad;
 });
 
 const applyTransform = (scale: number, wrapperInnerCoords: [number, number], canvasCoords: [number, number], rotate?: number) => {

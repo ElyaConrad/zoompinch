@@ -47,16 +47,33 @@ export function round(value: number, decimals: number) {
   return Math.round(value * factor) / factor;
 }
 
-export function detectTrackpad(event: WheelEvent) {
-  var isTrackpad = false;
-  if ((event as any).wheelDeltaY) {
-    if ((event as any).wheelDeltaY === event.deltaY * -3) {
+export function detectTrackpad(event: WheelEvent): boolean {
+  if (event.ctrlKey) {
+    const { deltaY, deltaMode, ctrlKey } = event;
+    const absDeltaY = Math.abs(deltaY);
+
+    const isMouseLikeDelta = absDeltaY === 120 || absDeltaY === 100 || absDeltaY === 3;
+
+    const hasFractionalDelta = deltaY % 1 !== 0;
+
+    const isPixelMode = deltaMode === 0;
+
+    if (ctrlKey) {
+      return (absDeltaY < 50 && isPixelMode) || hasFractionalDelta;
+    }
+
+    return !isMouseLikeDelta && (hasFractionalDelta || (isPixelMode && absDeltaY < 50));
+  } else {
+    var isTrackpad = false;
+    if ((event as any).wheelDeltaY) {
+      if ((event as any).wheelDeltaY === event.deltaY * -3) {
+        isTrackpad = true;
+      }
+    } else if (event.deltaMode === 0) {
       isTrackpad = true;
     }
-  } else if (event.deltaMode === 0) {
-    isTrackpad = true;
+    return isTrackpad;
   }
-  return isTrackpad;
 }
 export function isMultipleOf(n: number, multiples: number[]) {
   const factor = multiples.find((m) => n % m === 0);

@@ -39,6 +39,10 @@ function App() {
       maxScale={4}
       clampBounds={false}
       rotation={true}
+      zoomSpeed={1}
+      translateSpeed={1}
+      zoomSpeedAppleTrackpad={1}
+      translateSpeedAppleTrackpad={1}
       mouse={true}
       wheel={true}
       touch={true}

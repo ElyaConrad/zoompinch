@@ -4,6 +4,10 @@
     style="width: 800px; height: 600px; border: 1px solid #f00;"
     v-model:transform="transform"
     @init="handleInit"
+    :zoom-speed="1"
+    :translate-speed="1"
+    :zoom-speed-apple-trackpad="1"
+    :translate-speed-apple-trackpad="1"
   >
     <img width="1536" height="2048" src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
     

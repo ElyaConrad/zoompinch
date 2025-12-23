@@ -43,6 +43,10 @@ npm install @zoompinch/vue
         :max-scale="4"
         :clamp-bounds="false"
         :rotation="true"
+        :zoom-speed="1"
+        :translate-speed="1"
+        :zoom-speed-apple-trackpad="1"
+        :translate-speed-apple-trackpad="1"
         :mouse="false"
         :wheel="true"
         :touch="true"
@@ -144,6 +148,10 @@ function App() {
       maxScale={4}
       clampBounds={false}
       rotation={true}
+      zoomSpeed={1}
+      translateSpeed={1}
+      zoomSpeedAppleTrackpad={1}
+      translateSpeedAppleTrackpad={1}
       mouse={true}
       wheel={true}
       touch={true}

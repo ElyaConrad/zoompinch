@@ -62,6 +62,10 @@ export class ZoomPinchElement extends HTMLElement {
     const initialOffsetLeft = Number(this.getAttribute('offset-left'));
     const initialClampBounds = this.getAttribute('clamp-bounds') === 'true';
     const initialRotation = this.getAttribute('rotation') === 'true';
+    const initialZoomSpeed = Number(this.getAttribute('zoom-speed'));
+    const initialTranslateSpeed = Number(this.getAttribute('translate-speed'));
+    const initialZoomSpeedAppleTrackpad = Number(this.getAttribute('zoom-speed-apple-trackpad'));
+    const initialTranslateSpeedAppleTrackpad = Number(this.getAttribute('translate-speed-apple-trackpad'));
 
     this.engine = new Zoompinch(
       this.contentEl,
@@ -77,8 +81,22 @@ export class ZoomPinchElement extends HTMLElement {
       initialRotate,
       !isNaN(initialMinScale) ? initialMinScale : undefined,
       !isNaN(initialMaxScale) ? initialMaxScale : undefined,
-      initialClampBounds
+      initialClampBounds,
+      initialRotation,
     );
+
+    if (!isNaN(initialZoomSpeed)) {
+      this.engine.zoomSpeed = initialZoomSpeed;
+    }
+    if (!isNaN(initialTranslateSpeed)) {
+      this.engine.translateSpeed = initialTranslateSpeed;
+    }
+    if (!isNaN(initialZoomSpeedAppleTrackpad)) {
+      this.engine.zoomSpeedAppleTrackpad = initialZoomSpeedAppleTrackpad;
+    }
+    if (!isNaN(initialTranslateSpeedAppleTrackpad)) {
+      this.engine.translateSpeedAppleTrackpad = initialTranslateSpeedAppleTrackpad;
+    }
 
     this.contentEl.addEventListener('wheel', (e) => this.engine.handleWheel(e));
     this.contentEl.addEventListener('gesturestart', (e) => this.engine.handleGesturestart(e as any));
@@ -120,7 +138,24 @@ export class ZoomPinchElement extends HTMLElement {
   private disconnectedCallback() {
     this.engine.destroy();
   }
-  static observedAttributes = ['translate-x', 'translate-y', 'scale', 'rotate', 'min-scale', 'max-scale', 'offset-top', 'offset-right', 'offset-bottom', 'offset-left', 'clamp-bounds', 'rotation'];
+  static observedAttributes = [
+    'translate-x',
+    'translate-y',
+    'scale',
+    'rotate',
+    'min-scale',
+    'max-scale',
+    'offset-top',
+    'offset-right',
+    'offset-bottom',
+    'offset-left',
+    'clamp-bounds',
+    'rotation',
+    'zoom-speed',
+    'translate-speed',
+    'zoom-speed-apple-trackpad',
+    'translate-speed-apple-trackpad',
+  ];
   private attributeChangedCallback(name: string, _: string, value: string) {
     if (!this.engine) return;
     switch (name) {
@@ -198,6 +233,31 @@ export class ZoomPinchElement extends HTMLElement {
           this.engine.rotation = rotation;
           this.engine.update();
         }
+        break;
+      case 'zoom-speed':
+        const zoomSpeed = Number(value);
+        if (!isNaN(zoomSpeed)) {
+          this.engine.zoomSpeed = zoomSpeed;
+        }
+        break;
+      case 'translate-speed':
+        const translateSpeed = Number(value);
+        if (!isNaN(translateSpeed)) {
+          this.engine.translateSpeed = translateSpeed;
+        }
+        break;
+      case 'zoom-speed-apple-trackpad':
+        const zoomSpeedAppleTrackpad = Number(value);
+        if (!isNaN(zoomSpeedAppleTrackpad)) {
+          this.engine.zoomSpeedAppleTrackpad = zoomSpeedAppleTrackpad;
+        }
+        break;
+      case 'translate-speed-apple-trackpad':
+        const translateSpeedAppleTrackpad = Number(value);
+        if (!isNaN(translateSpeedAppleTrackpad)) {
+          this.engine.translateSpeedAppleTrackpad = translateSpeedAppleTrackpad;
+        }
+        break;
     }
   }
   public get canvasWidth() {

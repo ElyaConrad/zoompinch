@@ -62,6 +62,10 @@ function App() {
       maxScale={4}
       clampBounds={false}
       rotation={true}
+      zoomSpeed={1}
+      translateSpeed={1}
+      zoomSpeedAppleTrackpad={1}
+      translateSpeedAppleTrackpad={1}
       mouse={true}
       wheel={true}
       touch={true}
@@ -130,6 +134,36 @@ export default App;
 | `matrix` | `ReactNode \| Function` | - | Overlay content (see Matrix Prop) |
 
 **Note:** `minScale`, `maxScale`, `rotation`, and `clampBounds` only apply during user interaction. Programmatic changes via ref methods are unrestricted.
+
+### Speed Multipliers
+
+#### The Problem
+Pan and zoom interactions behave differently across input devices:
+- **Apple Trackpads**: Provide smooth, precise scroll values with natural momentum
+- **Mouse Wheels**: Send large, discrete jumps (typically ±100 or ±120 per scroll tick)
+
+Without normalization, this causes:
+- Uncomfortably large zoom jumps when using mouse wheels
+- Panning that's either too slow (trackpad-optimized) or too fast (mouse-optimized)
+- Inconsistent user experience across Windows, Mac, and Linux
+
+#### The Solution
+The library automatically detects the input device type and applies different speed multipliers:
+- **Trackpad gestures** use base values for smooth, 1:1 response
+- **Mouse wheel actions** use amplified values for comfortable discrete steps
+
+You can fine-tune these multipliers for your specific use case using the speed props.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `translateSpeed` | `number` | `1` | Pan speed multiplier for mouse wheels |
+| `zoomSpeed` | `number` | `1` | Zoom speed multiplier for mouse wheels |
+| `translateSpeedAppleTrackpad` | `number` | `1` | Pan speed multiplier for trackpads |
+| `zoomSpeedAppleTrackpad` | `number` | `1` | Zoom speed multiplier for trackpads |
+
+
+**Note:** `min-scale`, `max-scale`, `rotation`, and `clamp-bounds` only apply during user interaction. Programmatic changes via ref methods are unrestricted.
+
 
 ### Events
 
