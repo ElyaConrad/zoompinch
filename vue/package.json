@@ -1,7 +1,7 @@
 {
   "name": "@zoompinch/vue",
   "description": "Vue wrapper for ZoomPinch - reactive pinch & zoom component",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "private": false,
   "type": "module",
   "main": "./dist/zoompinch-vue.umd.js",
@@ -15,6 +15,20 @@
     },
     "./style.css": "./dist/style.css"
   },
+  "keywords": [
+    "vue",
+    "zoompinch",
+    "zoom images",
+    "pinch to zoom",
+    "image zoom",
+    "pan gesture",
+    "pan and zoom",
+    "panzoom",
+    "gesture library",
+    "touch gestures",
+    "vue3",
+    "vuejs"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build"
@@ -30,7 +44,7 @@
     "vue-tsc": "^3.2.0"
   },
   "dependencies": {
-    "@zoompinch/core": "^0.0.24"
+    "@zoompinch/core": "^0.0.25"
   },
   "peerDependencies": {
     "vue": "^3.5.26"

@@ -1,7 +1,7 @@
 {
   "name": "@zoompinch/core",
   "description": "Pinch-and-zoom experience that's feels native and communicates the transform reactively and lets you project any layer on top of the transformed canvas",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "private": false,
   "type": "module",
   "main": "./dist/zoompinch-core.umd.js",
@@ -14,6 +14,17 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "keywords": [
+    "zoompinch",
+    "zoom images",
+    "pinch to zoom",
+    "image zoom",
+    "pan gesture",
+    "pan and zoom",
+    "panzoom",
+    "gesture library",
+    "touch gestures"
+  ],
   "files": [
     "dist"
   ],

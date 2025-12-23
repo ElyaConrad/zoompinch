@@ -9,9 +9,11 @@ export default defineConfig({
       fileName: (format) => `zoompinch-elements.${format}.js`
     },
     rollupOptions: {
-      external: [],
+      external: ['@zoompinch/core'],
       output: {
-        globals: {}
+        globals: {
+          '@zoompinch/core': 'ZoompinchCore'
+        }
       }
     }
   },

@@ -35,25 +35,29 @@ npm install @zoompinch/vue
 
 ```vue
 <template>
-  <zoompinch
-    ref="zoompinchRef"
-    style="width: 800px; height: 600px; border: 1px solid #f00;"
-    v-model:transform="transform"
-    @init="handleInit"
-  >
-    <img width="1536" height="2048" src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
-    
-    <template #matrix="{ composePoint, canvasWidth, canvasHeight }">
-      <svg width="100%" height="100%">
-        <circle 
-          :cx="composePoint(canvasWidth / 2, canvasHeight / 2)[0]"
-          :cy="composePoint(canvasWidth / 2, canvasHeight / 2)[1]"
-          r="8"
-          fill="red"
-        />
-      </svg>
-    </template>
-  </zoompinch>
+    <zoompinch
+        ref="zoompinchRef"
+        v-model:transform="transform"
+        :offset="{ top: 0, right: 0, bottom: 0, left: 0 }"
+        :min-scale="0.5"
+        :max-scale="4"
+        :clamp-bounds="false"
+        :rotation="true"
+        :mouse="false"
+        :wheel="true"
+        :touch="true"
+        :gesture="true"
+        @init="handleInit"
+        @click="handleClick"
+    >
+        <img width="1536" height="2048"  src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public" />
+        <template #matrix="{ composePoint, normalizeClientCoords, canvasWidth, canvasHeight }">
+            <svg width="100%" height="100%">
+                <!-- Center marker -->
+                <circle  :cx="composePoint(canvasWidth / 2, canvasHeight / 2)[0]" :cy="composePoint(canvasWidth / 2, canvasHeight / 2)[1]" r="8" fill="red" />
+            </svg>
+        </template>
+    </zoompinch>
 </template>
 
 <script setup lang="ts">
@@ -69,12 +73,108 @@ const transform = ref({
 });
 
 function handleInit() {
-  zoompinchRef.value?.applyTransform(1, [0.5, 0.5], [0.5, 0.5]);
+  // Center canvas on initialization
+  zoompinchRef.value?.applyTransform(1, [0.5, 0.5], [0.5, 0.5], 0);
+}
+
+function handleTransformUpdate(newTransform) {
+  console.log('Transform updated:', newTransform);
+}
+
+function handleClick(event: MouseEvent) {
+  if (!zoompinchRef.value) return;
+  const [x, y] = zoompinchRef.value.normalizeClientCoords(event.clientX, event.clientY);
+  console.log('Cliked at', x, y);
 }
 </script>
+
+<style scoped>
+.zoompinch {
+    width: 800px;
+    height: 600px;
+    border: 1px solid #f00;
+}
+</style>
 ```
 
 **→ [Full Vue Documentation](./vue/README.md)**
+
+### React
+
+```bash
+npm install @zoompinch/react
+```
+
+```tsx
+import React, { useRef, useState } from 'react';
+import { Zoompinch, ZoompinchRef } from '@zoompinch/react';
+
+function App() {
+  const zoompinchRef = useRef<ZoompinchRef>(null);
+  const [transform, setTransform] = useState({
+    translateX: 0,
+    translateY: 0,
+    scale: 1,
+    rotate: 0
+  });
+
+  function handleInit() {
+    // Center canvas on initialization
+    zoompinchRef.current?.applyTransform(1, [0.5, 0.5], [0.5, 0.5], 0);
+  }
+
+  function handleTransformChange(newTransform) {
+    console.log('Transform updated:', newTransform);
+  }
+
+  function handleClick(event: React.MouseEvent) {
+    if (!zoompinchRef.current) return;
+    const [x, y] = zoompinchRef.current.normalizeClientCoords(event.clientX, event.clientY);
+    console.log('Clicked at canvas position:', x, y);
+  }
+
+  return (
+    <Zoompinch
+      ref={zoompinchRef}
+      style={{ width: '800px', height: '600px', border: '1px solid #ccc' }}
+      transform={transform}
+      onTransformChange={handleTransformChange}
+      offset={{ top: 0, right: 0, bottom: 0, left: 0 }}
+      minScale={0.5}
+      maxScale={4}
+      clampBounds={false}
+      rotation={true}
+      mouse={true}
+      wheel={true}
+      touch={true}
+      gesture={true}
+      onInit={handleInit}
+      onClick={handleClick}
+      matrix={({ composePoint, normalizeClientCoords, canvasWidth, canvasHeight }) => {
+        const [x, y] = composePoint(100, 100);
+
+        return (
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+            <circle cx={x} cy={y} r="5" fill="#f00" />
+          </svg>
+        );
+      }}
+    >
+      <img 
+        width="1536" 
+        height="2048" 
+        src="https://imagedelivery.net/mudX-CmAqIANL8bxoNCToA/489df5b2-38ce-46e7-32e0-d50170e8d800/public"
+        draggable={false}
+        style={{ userSelect: 'none' }}
+      />
+    </Zoompinch>
+  );
+}
+
+export default App;
+```
+
+**→ [Full React Documentation](./react/README.md)**
 
 ### Web Components
 
@@ -133,7 +233,8 @@ npm install @zoompinch/elements
 | Package | Description | Links |
 |---------|-------------|-------|
 | **@zoompinch/core** | Core engine (framework-agnostic) | [README](./core/README.md) · [npm](https://www.npmjs.com/package/@zoompinch/core) |
-| **@zoompinch/vue** | Vue 3 bindings | [README](./vue/README.md) · [npm](https://www.npmjs.com/@zoompinch/vue) |
+| **@zoompinch/vue** | Vue 3 | [README](./vue/README.md) · [npm](https://www.npmjs.com/@zoompinch/vue) |
+| **@zoompinch/react** | React | [README](./react/README.md) · [npm](https://www.npmjs.com/@zoompinch/react) |
 | **@zoompinch/elements** | Web Components | [README](./elements/README.md) · [npm](https://www.npmjs.com/@zoompinch/elements) |
 
 ## Core API

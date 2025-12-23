@@ -359,6 +359,7 @@ MIT
 ## Related
 
 - [@zoompinch/core](https://www.npmjs.com/package/@zoompinch/core) - Core engine
-- [@zoompinch/vue](https://www.npmjs.com/package/@zoompinch/vue) - Vue 3 bindings
+- [@zoompinch/vue](https://www.npmjs.com/package/@zoompinch/vue) - Vue 3
+- [@zoompinch/react](https://www.npmjs.com/package/@zoompinch/react) - React
 
 Built with ❤️ by Elya Maurice Conrad

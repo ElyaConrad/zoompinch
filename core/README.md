@@ -501,7 +501,8 @@ MIT
 
 ## Related
 
-- [@zoompinch/vue](https://www.npmjs.com/package/@zoompinch/vue) - Vue 3 bindings
+- [@zoompinch/vue](https://www.npmjs.com/package/@zoompinch/vue) - Vue 3
 - [@zoompinch/elements](https://www.npmjs.com/package/@zoompinch/elements) - Web Components
+- [@zoompinch/core](https://www.npmjs.com/package/@zoompinch/core) - Core engine
 
 Built with ❤️ by Elya Maurice Conrad

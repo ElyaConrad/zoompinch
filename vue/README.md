@@ -1,6 +1,6 @@
 # @zoompinch/vue
 
-Vue 3 bindings for [@zoompinch/core](https://github.com/ElyaConrad/zoompinch) - Apply a pinch-and-zoom experience that’s feels native and communicates the transform reactively and lets you project any layer on top of the transformed canvas.
+Vue 3 component for [@zoompinch/core](https://github.com/ElyaConrad/zoompinch) - Apply a pinch-and-zoom experience that’s feels native and communicates the transform reactively and lets you project any layer on top of the transformed canvas.
 
 **Play with the demo:** [https://zoompinch.pages.dev](https://zoompinch.pages.dev)
 
@@ -60,7 +60,6 @@ const transform = ref({
   scale: 1,
   rotate: 0
 });
-const clickPoint = ref<[number, number] | null>(null);
 
 function handleInit() {
   // Center canvas on initialization
@@ -74,7 +73,7 @@ function handleTransformUpdate(newTransform) {
 function handleClick(event: MouseEvent) {
   if (!zoompinchRef.value) return;
   const [x, y] = zoompinchRef.value.normalizeClientCoords(event.clientX, event.clientY);
-  clickPoint.value = [x, y];
+  console.log('Cliked at', x, y);
 }
 </script>
 
@@ -87,7 +86,6 @@ function handleClick(event: MouseEvent) {
 </style>
 ```
 
----
 
 ## API Reference
 
@@ -371,6 +369,7 @@ MIT
 ## Related
 
 - [@zoompinch/core](https://www.npmjs.com/package/@zoompinch/core) - Core engine
+- [@zoompinch/react](https://www.npmjs.com/package/@zoompinch/react) - React
 - [@zoompinch/elements](https://www.npmjs.com/package/@zoompinch/elements) - Web Components
 
 ---

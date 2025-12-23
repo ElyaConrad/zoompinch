@@ -1,7 +1,7 @@
 {
   "name": "@zoompinch/elements",
   "description": "Custom elements wrapper ZoomPinch - reactive pinch & zoom component",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "private": false,
   "type": "module",
   "main": "./dist/zoompinch-elements.umd.js",
@@ -14,6 +14,18 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "keywords": [
+    "custom elements",
+    "zoompinch",
+    "zoom images",
+    "pinch to zoom",
+    "image zoom",
+    "pan gesture",
+    "pan and zoom",
+    "panzoom",
+    "gesture library",
+    "touch gestures"
+  ],
   "files": [
     "dist"
   ],
@@ -26,7 +38,7 @@
     "vite": "^6.4.1"
   },
   "dependencies": {
-    "@zoompinch/core": "^0.0.24"
+    "@zoompinch/core": "^0.0.25"
   },
   "publishConfig": {
     "access": "public"
