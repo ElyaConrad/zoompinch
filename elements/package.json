@@ -1,7 +1,7 @@
 {
   "name": "@zoompinch/elements",
   "description": "Custom elements wrapper ZoomPinch - reactive pinch & zoom component",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "private": false,
   "type": "module",
   "main": "./dist/zoompinch-elements.umd.js",
@@ -38,7 +38,7 @@
     "vite": "^6.4.1"
   },
   "dependencies": {
-    "@zoompinch/core": "^0.0.34"
+    "@zoompinch/core": "^0.0.35"
   },
   "publishConfig": {
     "access": "public"

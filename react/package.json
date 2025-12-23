@@ -1,6 +1,6 @@
 {
   "name": "@zoompinch/react",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "React components for Zoompinch",
   "main": "./dist/zoompinch-react.umd.js",
   "module": "./dist/zoompinch-react.es.js",
@@ -58,6 +58,6 @@
     "vite-plugin-dts": "^4.5.4"
   },
   "dependencies": {
-    "@zoompinch/core": "^0.0.34"
+    "@zoompinch/core": "^0.0.35"
   }
 }
