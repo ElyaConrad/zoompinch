@@ -28,6 +28,8 @@ export class Zoompinch extends EventTarget {
   public translateSpeedAppleTrackpad = 1;
   public zoomSpeedAppleTrackpad = 1;
 
+  private isGestureActive = false;
+
   constructor(
     public element: HTMLElement,
     public offset: Offset,
@@ -47,10 +49,18 @@ export class Zoompinch extends EventTarget {
       this.wrapperBounds = { x, y, width, height };
       this.update();
     });
-    const roCanvas = new ResizeObserver(() => {
-      const { x, y, width, height } = getUntransformedRect(this.canvasElement.getBoundingClientRect(), this.renderingTranslateX, this.renderingTranslateY, this.renderinScale, this.renderingRotate);
-      this.canvasBounds = { x, y, width, height };
-      this.update();
+    const roCanvas = new ResizeObserver((entries) => {
+      // const { x, y, width, height } = getUntransformedRect(this.canvasElement.getBoundingClientRect(), this.renderingTranslateX, this.renderingTranslateY, this.renderinScale, this.renderingRotate);
+      // this.canvasBounds = { x, y, width, height };
+      // this.update();
+        const { width, height } = entries[0].contentRect;
+    if (width !== this.canvasBounds.width || height !== this.canvasBounds.height) {
+      this.canvasBounds = { ...this.canvasBounds, width, height };
+      // Nur wenn nicht während Gesture
+      if (!this.isGestureActive) {
+        this.update();
+      }
+    }
     });
 
     requestAnimationFrame(() => {
@@ -210,11 +220,12 @@ export class Zoompinch extends EventTarget {
       };
     });
   }
+  
   public handleTouchstart(event: TouchEvent) {
     this.touchStarts = this.freezeTouches(event.touches);
     this.touchStartTranslateX = this.translateX;
     this.touchStartTranslateY = this.translateY;
-
+    this.isGestureActive = true;
     event.preventDefault();
   }
   public handleTouchmove(event: TouchEvent) {
@@ -300,6 +311,7 @@ export class Zoompinch extends EventTarget {
       this.touchStartTranslateX = this.translateX;
       this.touchStartTranslateY = this.translateY;
     }
+    this.isGestureActive = false;
   }
   private calcProjectionTranslate(newScale: number, wrapperPosition: [number, number], canvasPosition: [number, number], virtualRotate?: number) {
     // Calculate the intrinsic dimensions of the canvas
