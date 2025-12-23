@@ -86,6 +86,34 @@ jobs:
         run: npm publish --access public
         env:
             NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  publish-react:
+    needs: publish-core
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      - name: Clear npm cache
+        run: npm cache clean --force
+      - name: Install dependencies
+        working-directory: react
+        run: npm install @zoompinch/core@latest
+
+      - name: Copy the local core package
+        run: cp -r ../core ./node_modules/@zoompinch/core
+        working-directory: react
+      
+      - name: Build
+        working-directory: react
+        run: npm run build
+
+      - name: Publish to npm
+        working-directory: react
+        run: npm publish --access public
+        env:
+            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
   deploy-cloudflare:
     runs-on: ubuntu-latest
