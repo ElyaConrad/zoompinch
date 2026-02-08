@@ -10,6 +10,9 @@ export default defineConfig({
       insertTypesEntry: true
     })
   ],
+  optimizeDeps: {
+    exclude: ['@zoompinch/core']
+  },
   build: {
     lib: {
       entry: 'src/index.ts',
@@ -17,8 +20,10 @@ export default defineConfig({
       formats: ['es', 'umd'],
       fileName: (format) => `zoompinch-vue.${format}.js`
     },
+    
     cssCodeSplit: false,
     rollupOptions: {
+      
       external: ['vue', '@zoompinch/core'],
       output: {
         globals: {

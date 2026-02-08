@@ -319,7 +319,7 @@ export class Zoompinch extends EventTarget {
     }
     this.isGestureActive = false;
   }
-  private calcProjectionTranslate(newScale: number, wrapperPosition: [number, number], canvasPosition: [number, number], virtualRotate?: number) {
+  public calcProjectionTranslate(newScale: number, wrapperPosition: [number, number], canvasPosition: [number, number], virtualRotate?: number) {
     // Calculate the intrinsic dimensions of the canvas
     const canvasIntrinsicWidth = this.canvasBounds.width * this.naturalScale;
     const canvasIntrinsicHeight = this.canvasBounds.height * this.naturalScale;
