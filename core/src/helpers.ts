@@ -48,32 +48,14 @@ export function round(value: number, decimals: number) {
 }
 
 export function detectTrackpad(event: WheelEvent): boolean {
-  if (event.ctrlKey) {
-    const { deltaY, deltaMode, ctrlKey } = event;
-    const absDeltaY = Math.abs(deltaY);
-
-    const isMouseLikeDelta = absDeltaY === 120 || absDeltaY === 100 || absDeltaY === 3;
-
-    const hasFractionalDelta = deltaY % 1 !== 0;
-
-    const isPixelMode = deltaMode === 0;
-
-    if (ctrlKey) {
-      return (absDeltaY < 50 && isPixelMode) || hasFractionalDelta;
-    }
-
-    return !isMouseLikeDelta && (hasFractionalDelta || (isPixelMode && absDeltaY < 50));
-  } else {
-    var isTrackpad = false;
-    if ((event as any).wheelDeltaY) {
-      if ((event as any).wheelDeltaY === event.deltaY * -3) {
-        isTrackpad = true;
-      }
-    } else if (event.deltaMode === 0) {
-      isTrackpad = true;
-    }
-    return isTrackpad;
-  }
+  // deltaMode === 0 means the browser is reporting pixel-level deltas, which
+  // is the reliable cross-browser signal for trackpad (and touch) input.
+  // Mouse wheels report in line units (deltaMode === 1) or produce large
+  // discrete pixel values that don't use pixel mode.
+  // We avoid the fragile wheelDeltaY / deltaY * -3 ratio check because it
+  // breaks during high-velocity momentum scrolling on macOS, causing the
+  // canvas to jump 25x further than intended.
+  return event.deltaMode === 0;
 }
 export function normalizeWheelDelta(event: WheelEvent): { deltaX: number; deltaY: number } {
   let { deltaX, deltaY, deltaMode } = event;
@@ -117,7 +99,6 @@ export function normalizeWheelDelta(event: WheelEvent): { deltaX: number; deltaY
 }
 // Simplified version
 export function normalizeWheel(event: WheelEvent) {
-  const PIXEL_STEP = 10;
   const LINE_HEIGHT = 40;
   const PAGE_HEIGHT = 800;
 
