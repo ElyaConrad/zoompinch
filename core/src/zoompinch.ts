@@ -20,8 +20,8 @@ export type Transform = {
 };
 
 export class Zoompinch extends EventTarget {
-  wrapperBounds!: Bounds;
-  canvasBounds!: Bounds;
+  wrapperBounds: Bounds = { x: 0, y: 0, width: 100, height: 100 };
+  canvasBounds: Bounds = { x: 0, y: 0, width: 100, height: 100 };
 
   public translateSpeed = 1;
   public zoomSpeed = 1;
