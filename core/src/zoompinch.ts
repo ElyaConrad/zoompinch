@@ -30,6 +30,10 @@ export class Zoompinch extends EventTarget {
 
   private isGestureActive = false;
 
+  private roElement: ResizeObserver | null = null;
+  private roCanvas: ResizeObserver | null = null;
+  private ancestorMotionCleanup: (() => void) | null = null;
+
   constructor(
     public element: HTMLElement,
     public offset: Offset,
@@ -44,12 +48,12 @@ export class Zoompinch extends EventTarget {
   ) {
     super();
 
-    const roElement = new ResizeObserver(() => {
+    this.roElement = new ResizeObserver(() => {
       const { x, y, width, height } = this.element.getBoundingClientRect();
       this.wrapperBounds = { x, y, width, height };
       this.update();
     });
-    const roCanvas = new ResizeObserver((entries) => {
+    this.roCanvas = new ResizeObserver((entries) => {
       // const { x, y, width, height } = getUntransformedRect(this.canvasElement.getBoundingClientRect(), this.renderingTranslateX, this.renderingTranslateY, this.renderinScale, this.renderingRotate);
       // this.canvasBounds = { x, y, width, height };
       // this.update();
@@ -70,8 +74,59 @@ export class Zoompinch extends EventTarget {
       this.dispatchEvent(new Event('init'));
     });
 
-    roCanvas.observe(this.canvasElement);
-    roElement.observe(this.element);
+    this.roCanvas.observe(this.canvasElement);
+    this.roElement.observe(this.element);
+
+    // ResizeObserver only fires on size changes, so a CSS transform/animation on an
+    // ancestor that translates this.element without resizing it (e.g., a route transition
+    // playing while we mount) leaves wrapperBounds.x/y stale — every subsequent
+    // client→canvas coordinate conversion is then offset by the in-flight transform.
+    // Capture-phase listeners on the document catch transition/animation events from any
+    // ancestor and re-read getBoundingClientRect when motion settles.
+    this.installAncestorMotionListeners();
+  }
+  private installAncestorMotionListeners() {
+    const refreshWrapperBounds = () => {
+      const { x, y, width, height } = this.element.getBoundingClientRect();
+      if (
+        x === this.wrapperBounds.x &&
+        y === this.wrapperBounds.y &&
+        width === this.wrapperBounds.width &&
+        height === this.wrapperBounds.height
+      ) {
+        return;
+      }
+      this.wrapperBounds = { x, y, width, height };
+      this.update();
+    };
+
+    const targetIsAncestor = (target: EventTarget | null) => {
+      if (!(target instanceof Node)) return false;
+      if (target === this.element) return false;
+      return target.contains(this.element);
+    };
+
+    const onAncestorMotion = (event: Event) => {
+      if (!targetIsAncestor(event.target)) return;
+      refreshWrapperBounds();
+    };
+
+    const events: (keyof DocumentEventMap)[] = [
+      'transitionrun',
+      'transitionend',
+      'transitioncancel',
+      'animationend',
+      'animationcancel',
+    ];
+    for (const ev of events) {
+      document.addEventListener(ev, onAncestorMotion, true);
+    }
+
+    this.ancestorMotionCleanup = () => {
+      for (const ev of events) {
+        document.removeEventListener(ev, onAncestorMotion, true);
+      }
+    };
   }
   get canvasElement() {
     return this.element.querySelector('.canvas')! as HTMLElement;
@@ -468,6 +523,11 @@ export class Zoompinch extends EventTarget {
     this.dispatchEvent(new Event('update'));
   }
   public destroy() {
-    // Cleanup here
+    this.roElement?.disconnect();
+    this.roElement = null;
+    this.roCanvas?.disconnect();
+    this.roCanvas = null;
+    this.ancestorMotionCleanup?.();
+    this.ancestorMotionCleanup = null;
   }
 }
