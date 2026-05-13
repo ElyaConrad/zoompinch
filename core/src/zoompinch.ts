@@ -451,7 +451,10 @@ export class Zoompinch extends EventTarget {
   }
   // Converts absolute client to coordinates to absolute inner-wrapper coorinates
   private clientCoordsToWrapperCoords(clientX: number, clientY: number) {
-    return [clientX - this.wrapperInnerX, clientY - this.wrapperInnerY] as [number, number];
+    // Read x/y fresh so page or ancestor scroll (which does not fire ResizeObserver)
+    // can't leave the cached origin stale and offset the gesture coordinates.
+    const { x, y } = this.element.getBoundingClientRect();
+    return [clientX - x - this.offset.left, clientY - y - this.offset.top] as [number, number];
   }
   // Converts absolute client coordinates to relative wrapper coordinates (0-1, 0-1)
   private relativeWrapperCoordinatesFromClientCoords(clientX: number, clientY: number) {
