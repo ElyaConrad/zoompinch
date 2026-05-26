@@ -48,14 +48,14 @@ export function round(value: number, decimals: number) {
 }
 
 export function detectTrackpad(event: WheelEvent): boolean {
-  // deltaMode === 0 means the browser is reporting pixel-level deltas, which
-  // is the reliable cross-browser signal for trackpad (and touch) input.
-  // Mouse wheels report in line units (deltaMode === 1) or produce large
-  // discrete pixel values that don't use pixel mode.
-  // We avoid the fragile wheelDeltaY / deltaY * -3 ratio check because it
-  // breaks during high-velocity momentum scrolling on macOS, causing the
-  // canvas to jump 25x further than intended.
-  return event.deltaMode === 0;
+  // Line/page mode is always a mouse wheel.
+  if (event.deltaMode !== 0) return false;
+
+  // In pixel mode both inputs show up, so fall back to magnitude:
+  // trackpads send small deltas (usually under ~30), mouse wheels send
+  // chunks of ~100+ per notch. 50 sits comfortably between them.
+  const dominantDelta = Math.max(Math.abs(event.deltaX), Math.abs(event.deltaY));
+  return dominantDelta < 50;
 }
 export function normalizeWheelDelta(event: WheelEvent): { deltaX: number; deltaY: number } {
   let { deltaX, deltaY, deltaMode } = event;
