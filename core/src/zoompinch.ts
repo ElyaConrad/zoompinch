@@ -237,7 +237,11 @@ export class Zoompinch extends EventTarget {
 
     if (ctrlKey) {
       const zoomSpeed = isTrackpad ? 0.01 * this.zoomSpeedAppleTrackpad : 0.1 * this.zoomSpeed;
-      const scaleFactor = 1 + -deltaY * zoomSpeed;
+      // Cap the per-event multiplier so a single oversized wheel event
+      // cannot drive scaleFactor to 0 or negative — which would clamp newScale to
+      // minScale on the first tick and silently kill zoom.
+      const cappedDelta = clamp(-deltaY * zoomSpeed, -0.5, 0.5);
+      const scaleFactor = 1 + cappedDelta;
 
       let newScale = currScale * scaleFactor;
 
