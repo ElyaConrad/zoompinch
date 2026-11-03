@@ -152,6 +152,12 @@ export class Zoompinch extends EventTarget {
   }
   // Get natural scale
   get naturalScale() {
+    // A canvas that has not been measured yet (0 × 0) would make this w / 0 =
+    // Infinity, and every translate computed from it 0 * Infinity = NaN. NaN never
+    // equals itself, so the framework wrappers kept re-syncing it forever (an
+    // endless update loop that froze a production page). Stay finite until the
+    // canvas has a size; the next update after it is measured computes the real one.
+    if (!(this.canvasBounds.width > 0) || !(this.canvasBounds.height > 0)) return 1;
     if (this.canvasNaturalRatio >= this.wrapperInnerRatio) {
       return this.wrapperInnerWidth / this.canvasBounds.width;
     } else {

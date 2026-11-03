@@ -98,7 +98,8 @@ onMounted(() => {
       scale: zoompinchEngine.value.scale,
       rotate: zoompinchEngine.value.rotate,
     };
-    if (newTransform.translateX !== props.transform.translateX || newTransform.translateY !== props.transform.translateY || newTransform.scale !== props.transform.scale || newTransform.rotate !== props.transform.rotate) {
+    // Object.is, not !==: NaN !== NaN, so a NaN transform would be emitted forever.
+    if (!Object.is(newTransform.translateX, props.transform.translateX) || !Object.is(newTransform.translateY, props.transform.translateY) || !Object.is(newTransform.scale, props.transform.scale) || !Object.is(newTransform.rotate, props.transform.rotate)) {
       emit('update:transform', newTransform);
     }
 
@@ -118,10 +119,10 @@ watch(
   () => {
     if (!zoompinchEngine.value) return;
     if (
-      zoompinchEngine.value.translateX !== props.transform.translateX ||
-      zoompinchEngine.value.translateY !== props.transform.translateY ||
-      zoompinchEngine.value.scale !== props.transform.scale ||
-      zoompinchEngine.value.rotate !== props.transform.rotate
+      !Object.is(zoompinchEngine.value.translateX, props.transform.translateX) ||
+      !Object.is(zoompinchEngine.value.translateY, props.transform.translateY) ||
+      !Object.is(zoompinchEngine.value.scale, props.transform.scale) ||
+      !Object.is(zoompinchEngine.value.rotate, props.transform.rotate)
     ) {
       zoompinchEngine.value.translateX = props.transform.translateX;
       zoompinchEngine.value.translateY = props.transform.translateY;

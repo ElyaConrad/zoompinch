@@ -161,28 +161,28 @@ export class ZoomPinchElement extends HTMLElement {
     switch (name) {
       case 'translate-x':
         const translateX = Number(value);
-        if (this.engine.translateX !== translateX) {
+        if (!Object.is(this.engine.translateX, translateX)) {
           this.engine.translateX = translateX;
           this.engine.update();
         }
         break;
       case 'translate-y':
         const translateY = Number(value);
-        if (this.engine.translateY !== translateY) {
+        if (!Object.is(this.engine.translateY, translateY)) {
           this.engine.translateY = translateY;
           this.engine.update();
         }
         break;
       case 'scale':
         const scale = Number(value);
-        if (this.engine.scale !== scale) {
+        if (!Object.is(this.engine.scale, scale)) {
           this.engine.scale = scale;
           this.engine.update();
         }
         break;
       case 'rotate':
         const rotate = Number(value);
-        if (this.engine.rotate !== rotate) {
+        if (!Object.is(this.engine.rotate, rotate)) {
           this.engine.rotate = rotate;
           this.engine.update();
         }

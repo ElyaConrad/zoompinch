@@ -161,7 +161,7 @@ export const Zoompinch = forwardRef<ZoompinchRef, ZoompinchProps>(({
         rotate: zoompinchEngine.current.rotate,
       };
 
-      if (onTransformChange && (newTransform.translateX !== transform.translateX || newTransform.translateY !== transform.translateY || newTransform.scale !== transform.scale || newTransform.rotate !== transform.rotate)) {
+      if (onTransformChange && (!Object.is(newTransform.translateX, transform.translateX) || !Object.is(newTransform.translateY, transform.translateY) || !Object.is(newTransform.scale, transform.scale) || !Object.is(newTransform.rotate, transform.rotate))) {
         onTransformChange(newTransform);
       }
 
@@ -191,7 +191,8 @@ export const Zoompinch = forwardRef<ZoompinchRef, ZoompinchProps>(({
   useEffect(() => {
     if (!zoompinchEngine.current || !ready.current) return;
 
-    if (zoompinchEngine.current.translateX !== transform.translateX || zoompinchEngine.current.translateY !== transform.translateY || zoompinchEngine.current.scale !== transform.scale || zoompinchEngine.current.rotate !== transform.rotate) {
+    // Object.is, not !==: NaN !== NaN would re-apply a NaN transform on every render.
+    if (!Object.is(zoompinchEngine.current.translateX, transform.translateX) || !Object.is(zoompinchEngine.current.translateY, transform.translateY) || !Object.is(zoompinchEngine.current.scale, transform.scale) || !Object.is(zoompinchEngine.current.rotate, transform.rotate)) {
       zoompinchEngine.current.translateX = transform.translateX;
       zoompinchEngine.current.translateY = transform.translateY;
       zoompinchEngine.current.scale = transform.scale;
