@@ -45,8 +45,14 @@ jobs:
         working-directory: elements
         run: npm install --no-save @zoompinch/core@latest
 
+      # Build core from this commit: @latest can still be the previous
+      # version right after publish-core, which breaks the type-check.
+      - name: Build the local core package
+        working-directory: core
+        run: npm install && npm run build
+
       - name: Copy the local core package
-        run: cp -r ../core ./node_modules/@zoompinch/core
+        run: rm -rf ./node_modules/@zoompinch/core && cp -r ../core ./node_modules/@zoompinch/core
         working-directory: elements
 
       - name: Build
@@ -73,8 +79,14 @@ jobs:
         working-directory: vue
         run: npm install --no-save @zoompinch/core@latest
 
+      # Build core from this commit: @latest can still be the previous
+      # version right after publish-core, which breaks the type-check.
+      - name: Build the local core package
+        working-directory: core
+        run: npm install && npm run build
+
       - name: Copy the local core package
-        run: cp -r ../core ./node_modules/@zoompinch/core
+        run: rm -rf ./node_modules/@zoompinch/core && cp -r ../core ./node_modules/@zoompinch/core
         working-directory: vue
       
       - name: Build
@@ -101,8 +113,14 @@ jobs:
         working-directory: react
         run: npm install --no-save @zoompinch/core@latest
 
+      # Build core from this commit: @latest can still be the previous
+      # version right after publish-core, which breaks the type-check.
+      - name: Build the local core package
+        working-directory: core
+        run: npm install && npm run build
+
       - name: Copy the local core package
-        run: cp -r ../core ./node_modules/@zoompinch/core
+        run: rm -rf ./node_modules/@zoompinch/core && cp -r ../core ./node_modules/@zoompinch/core
         working-directory: react
       
       - name: Build
