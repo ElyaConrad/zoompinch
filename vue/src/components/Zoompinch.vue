@@ -24,6 +24,8 @@ const props = withDefaults(
     };
     maxScale?: number;
     minScale?: number;
+    /** Cap for the fit scale. 1 = never upscale the content beyond its own size. */
+    maxNaturalScale?: number;
     clampBounds?: boolean;
     rotation?: boolean;
     mouse?: boolean;
@@ -40,6 +42,7 @@ const props = withDefaults(
     offset: () => ({ left: 0, top: 0, right: 0, bottom: 0 }),
     minScale: 0.5,
     maxScale: 10,
+    maxNaturalScale: Infinity,
     clampBounds: false,
     rotation: true,
     mouse: true,
@@ -72,6 +75,8 @@ const canvasHeight = ref(0);
 onMounted(() => {
   if (!zoompinchRef.value) return;
   zoompinchEngine.value = new Zoompinch(zoompinchRef.value, props.offset, props.transform.translateX, props.transform.translateY, props.transform.scale, props.transform.rotate, props.minScale, props.maxScale, props.clampBounds, props.rotation);
+
+  zoompinchEngine.value.maxNaturalScale = props.maxNaturalScale;
 
   if (props.zoomSpeed !== undefined) {
     zoompinchEngine.value.zoomSpeed = props.zoomSpeed;
@@ -156,6 +161,14 @@ watch(
   (newMaxScale) => {
     if (!zoompinchEngine.value) return;
     zoompinchEngine.value.maxScale = newMaxScale;
+    zoompinchEngine.value.update();
+  }
+);
+watch(
+  () => props.maxNaturalScale,
+  (newMaxNaturalScale) => {
+    if (!zoompinchEngine.value) return;
+    zoompinchEngine.value.maxNaturalScale = newMaxNaturalScale;
     zoompinchEngine.value.update();
   }
 );

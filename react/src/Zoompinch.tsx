@@ -31,6 +31,8 @@ export interface ZoompinchProps {
   };
   maxScale?: number;
   minScale?: number;
+  /** Cap for the fit scale. 1 = never upscale the content beyond its own size. */
+  maxNaturalScale?: number;
   clampBounds?: boolean;
   rotation?: boolean;
   mouse?: boolean;
@@ -56,6 +58,7 @@ export const Zoompinch = forwardRef<ZoompinchRef, ZoompinchProps>(({
   offset = { left: 0, top: 0, right: 0, bottom: 0 },
   minScale = 0.5,
   maxScale = 10,
+  maxNaturalScale = Infinity,
   clampBounds = false,
   rotation = true,
   mouse = true,
@@ -138,6 +141,8 @@ export const Zoompinch = forwardRef<ZoompinchRef, ZoompinchProps>(({
 
     // Jetzt mit den Props initialisieren
     zoompinchEngine.current = new ZoompinchCore(zoompinchRef.current, offset, transform.translateX, transform.translateY, transform.scale, transform.rotate, minScale, maxScale, clampBounds, rotation);
+
+    zoompinchEngine.current.maxNaturalScale = maxNaturalScale;
 
     if (zoomSpeed !== undefined) {
       zoompinchEngine.current.zoomSpeed = zoomSpeed;
@@ -222,6 +227,13 @@ export const Zoompinch = forwardRef<ZoompinchRef, ZoompinchProps>(({
     zoompinchEngine.current.maxScale = maxScale;
     zoompinchEngine.current.update();
   }, [maxScale]);
+
+  useEffect(() => {
+    if (!zoompinchEngine.current || !ready.current) return;
+
+    zoompinchEngine.current.maxNaturalScale = maxNaturalScale;
+    zoompinchEngine.current.update();
+  }, [maxNaturalScale]);
 
   useEffect(() => {
     if (!zoompinchEngine.current || !ready.current) return;

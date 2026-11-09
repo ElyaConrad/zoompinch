@@ -41,6 +41,7 @@ npm install @zoompinch/vue
         :offset="{ top: 0, right: 0, bottom: 0, left: 0 }"
         :min-scale="0.5"
         :max-scale="4"
+        :max-natural-scale="2"
         :clamp-bounds="false"
         :rotation="true"
         :zoom-speed="1"
@@ -147,6 +148,7 @@ function App() {
       offset={{ top: 0, right: 0, bottom: 0, left: 0 }}
       minScale={0.5}
       maxScale={4}
+      maxNaturalScale={2}
       clampBounds={false}
       rotation={true}
       zoomSpeed={1}
@@ -276,6 +278,8 @@ rotateCanvas(x, y, radians)
   rotate: number       // Rotation in radians
 }
 ```
+
+`scale: 1` means "fitted": the canvas is scaled to fit the wrapper. Set `maxNaturalScale` to limit how far that fit may scale a small canvas UP beyond its own size (`1` = never, `2` = up to double). Larger canvases still shrink to fit, and `scale` can still zoom in on top. Default: no limit.
 
 ### Events
 

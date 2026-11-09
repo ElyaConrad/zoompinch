@@ -27,6 +27,12 @@ export class Zoompinch extends EventTarget {
   public zoomSpeed = 1;
   public translateSpeedAppleTrackpad = 1;
   public zoomSpeedAppleTrackpad = 1;
+  /**
+   * Upper bound for the fit scale. 1 = never show the canvas larger than its
+   * own CSS size when it is fitted (small content stays small and centred).
+   * Zooming in via `scale` still works on top of it.
+   */
+  public maxNaturalScale = Infinity;
 
   private isGestureActive = false;
 
@@ -158,11 +164,11 @@ export class Zoompinch extends EventTarget {
     // endless update loop that froze a production page). Stay finite until the
     // canvas has a size; the next update after it is measured computes the real one.
     if (!(this.canvasBounds.width > 0) || !(this.canvasBounds.height > 0)) return 1;
-    if (this.canvasNaturalRatio >= this.wrapperInnerRatio) {
-      return this.wrapperInnerWidth / this.canvasBounds.width;
-    } else {
-      return this.wrapperInnerHeight / this.canvasBounds.height;
-    }
+    const fitScale =
+      this.canvasNaturalRatio >= this.wrapperInnerRatio
+        ? this.wrapperInnerWidth / this.canvasBounds.width
+        : this.wrapperInnerHeight / this.canvasBounds.height;
+    return Math.min(fitScale, this.maxNaturalScale);
   }
   // The clamping is an explicit user intention
   // The reason is that we do not want side effects when toggling the clamp
